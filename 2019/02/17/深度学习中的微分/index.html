@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      深度学习中的微分 | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="我们在研究与应用深度学习时，会碰到一个无法绕过的内容，就是微分求导，再具体点其实就是反向传播优。如果我们只是简单地应用深度学习、搭搭模型，那么可以不用深究。但是如果想深入的从工程上了解深度学习及对应框架的实现，那么了解程序是如何进行反向传播，自动微分就十分重要了。本文将一步步的从简单的手动求导一直谈到自动微分。">
+<meta name="keywords" content="Deep learning,Differentiation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习中的微分 | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/02/17/深度学习中的微分/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="我们在研究与应用深度学习时，会碰到一个无法绕过的内容，就是微分求导，再具体点其实就是反向传播优。如果我们只是简单地应用深度学习、搭搭模型，那么可以不用深究。但是如果想深入的从工程上了解深度学习及对应框架的实现，那么了解程序是如何进行反向传播，自动微分就十分重要了。本文将一步步的从简单的手动求导一直谈到自动微分。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/symbolic1.png">
+<meta property="og:image" content="http://yoursite.com/images/forward_autodiff1.png">
+<meta property="og:image" content="http://yoursite.com/images/reverse_mode1.png">
+<meta property="og:image" content="http://yoursite.com/images/autograd1.png">
+<meta property="og:image" content="http://yoursite.com/images/autograd_graph1.png">
+<meta property="og:updated_time" content="2019-05-26T17:09:03.915Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习中的微分 | 王鸣辉的博客">
+<meta name="twitter:description" content="我们在研究与应用深度学习时，会碰到一个无法绕过的内容，就是微分求导，再具体点其实就是反向传播优。如果我们只是简单地应用深度学习、搭搭模型，那么可以不用深究。但是如果想深入的从工程上了解深度学习及对应框架的实现，那么了解程序是如何进行反向传播，自动微分就十分重要了。本文将一步步的从简单的手动求导一直谈到自动微分。">
+<meta name="twitter:image" content="http://yoursite.com/images/symbolic1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">深度学习中的微分</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-02-17" class="post-meta__date date">2019-02-17</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Deep-learning/">Deep learning</a>, <a class="tags-link" href="/tags/Differentiation/">Differentiation</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>我们在研究与应用深度学习时，会碰到一个无法绕过的内容，就是微分求导，再具体点其实就是反向传播优。如果我们只是简单地应用深度学习、搭搭模型，那么可以不用深究。但是如果想深入的从工程上了解深度学习及对应框架的实现，那么了解程序是如何进行反向传播，自动微分就十分重要了。本文将一步步的从简单的手动求导一直谈到自动微分。<br><a id="more"></a><br>我们在研究与应用深度学习时，会碰到一个无法绕过的内容，就是微分求导，再具体点其实就是反向传播。如果我们只是简单地应用深度学习、搭搭模型，那么可以不用深究。但是如果想深入的从工程上了解深度学习及对应框架的实现，那么了解程序是如何进行反向传播，自动微分就十分重要了。本文将一步步的从简单的手动求导一直谈到自动微分。<br>我们目前可以将微分划分为四大类，Manual Differentiation、Symbolic Differentiation、Numeric Differentiation、Automatic Differentiation</p>
+<h2 id="Manual-Differentiation"><a href="#Manual-Differentiation" class="headerlink" title="Manual Differentiation"></a>Manual Differentiation</h2><p>Manual Differentiation正如字面意思所写，就是手动对函数求导。<br>比如下式就是个简单的函数。<br>$f ( x , y ) = x ^ { 2 } y + y + 2$<br>对x求导可得：<br>$\frac { \partial f } { \partial x } = \frac { \partial x ^ { 2 } y } { \partial x } + \frac { \partial y } { \partial x } + \frac { \partial 2 } { \partial x } = 2 x y + 0 + 0 = 2 x y$<br>对y求导可得：<br>$\frac { \partial f } { \partial y } = \frac { \partial x ^ { 2 } y } { \partial y } + \frac { \partial y } { \partial y } + \frac { \partial 2 } { \partial y } = x ^ { 2 } + 1 + 0 = x ^ { 2 } + 1$<br>这个例子很见到，只要了解基本的求导公式，都可以很迅速的解决。但是当我们面临的是一个极其复杂的公式时，整个过程将会非常繁琐，而且容易出错。</p>
+<h2 id="Symbolic-Differentiation"><a href="#Symbolic-Differentiation" class="headerlink" title="Symbolic Differentiation"></a>Symbolic Differentiation</h2><p>为了避免人力的介入，首先提出了 Symbolic Differentiation 即符号微分。<br>下面也是个简单的例子：<br>$g ( x , y ) = 5 + x y$<br>符号微分方式如下图：<br><img src="/images/symbolic1.png" alt=" symbolic differentiation graph"></p>
+<p>这个例子很简单，但是对于复杂函数会生成非常大的图，很难简化，有一定的性能问题。<br>更重要的是，符号微分无法对任意代码定义的函数进行求导,如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_func</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    z = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">        z = a * np.cos(z + i) + z * n</span><br><span class="line">    <span class="keyword">return</span> z</span><br></pre></td></tr></table></figure></p>
+<h2 id="Numeric-Differentiation"><a href="#Numeric-Differentiation" class="headerlink" title="Numeric Differentiation"></a>Numeric Differentiation</h2><p>那怎样才能对任意函数进行求导呢，于是引出了Numeric Differentiation，顾名思义就是用数值去近似计算，求微分。<br>我们知道<br>$\begin{aligned} h ^ { \prime } ( x ) = \lim _ { x \rightarrow x _ { 0 } } \frac { h ( x ) - h \left( x _ { 0 } \right) } { x - x _ { 0 } }  = \lim _ { \epsilon \rightarrow 0 } \frac { h \left( x _ { 0 } + \epsilon \right) - h \left( x _ { 0 } \right) } { \epsilon } \end{aligned}$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x**<span class="number">2</span>*y + y + <span class="number">2</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">derivative</span><span class="params">(f, x, y, x_eps, y_eps)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> (f(x + x_eps, y + y_eps) - f(x, y)) / (x_eps + y_eps)</span><br><span class="line"></span><br><span class="line">df_dx = derivative(f, <span class="number">3</span>, <span class="number">4</span>, <span class="number">0.00001</span>, <span class="number">0</span>) <span class="comment"># 24.000039999805264</span></span><br><span class="line">df_dy = derivative(f, <span class="number">3</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="number">0.00001</span>) <span class="comment"># 10.000000000331966</span></span><br></pre></td></tr></table></figure>
+<p>数值微分里边，如上边的代码，我们至少需要执行三次f(x,y),当我们的参数有1000个时就至少要执行1001次，在大规模的神经网络模型中，这样的做法是很低效的。不过数值微分比较简单，可以用来对手动求导的值进行验证。</p>
+<h2 id="Automatic-Differentiation"><a href="#Automatic-Differentiation" class="headerlink" title="Automatic Differentiation"></a>Automatic Differentiation</h2><p>Autodiff算是在之前提到的这些方案基础之上得到的一个兼具性能和数值稳定的方案。</p>
+<h3 id="Forward-Mode-Autodiff"><a href="#Forward-Mode-Autodiff" class="headerlink" title="Forward-Mode Autodiff"></a>Forward-Mode Autodiff</h3><ul>
+<li>Forward-Mode是数值微分和符号微分的结合</li>
+<li>引入二元数ε， ϵ**2 = 0 ( ϵ ≠ 0)</li>
+<li>$h ( a + b \epsilon ) = h ( a ) + b \times h ^ { \prime } ( a ) \epsilon$</li>
+<li>所以f(x,y) 在(3,4)点对x的导数为ϵ前面的系数</li>
+</ul>
+<p><img src="/images/forward_autodiff1.png" alt=" Forward Autodiff graph"><br>forward-mode autodiff 比数值微分更准确，但是也有同样的问题，就是有n个参数要走n次图</p>
+<h3 id="Reverse-Mode-Autodiff"><a href="#Reverse-Mode-Autodiff" class="headerlink" title="Reverse-Mode Autodiff"></a>Reverse-Mode Autodiff</h3><p>为了解决Forward-Mode中需要根据参数进行图遍历的问题，提出了Reverse-Mode Autodiff方案。这也就是我们常说的链式法则、反向传播算法(machine learning中我们常常将其等价)。</p>
+<ul>
+<li>第一遍，先从输入到输出，进行前向计算</li>
+<li>第二遍，从输出到输入，进行反向计算求偏导</li>
+</ul>
+<p><img src="/images/reverse_mode1.png" alt=" Reverse Autodiff graph"></p>
+<ul>
+<li>Reverse-Mode Autodiff在有大量输入，少量输出时是非常有力的方案</li>
+<li>一次正向，一次反向可以计算所有输入的偏导</li>
+<li>一个简易教学版的Autograd的实现：<a href="https://github.com/mattjj/autodidact" target="_blank" rel="noopener">https://github.com/mattjj/autodidact</a></li>
+</ul>
+<h3 id="相关工程实现"><a href="#相关工程实现" class="headerlink" title="相关工程实现"></a>相关工程实现</h3><p>Autograd将numpy包了一层，提供与numpy相同的基础ops，但自己内部创建了计算图<br><img src="/images/autograd1.png" alt=" autograd"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> autograd.numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> autograd <span class="keyword">import</span> grad</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">logistic</span><span class="params">(z)</span>:</span></span><br><span class="line">    <span class="comment"># 等价形式</span></span><br><span class="line">    <span class="comment"># np.reciprocal(np.add(1, np.exp(np.negative(z))))</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.</span> / (<span class="number">1.</span> + np.exp(-z))</span><br><span class="line"></span><br><span class="line">print(logistic(<span class="number">1.5</span>))                              <span class="comment"># 0.8175744761936437</span></span><br><span class="line">print(grad(logistic)(<span class="number">1.5</span>))                    <span class="comment"># 0.14914645207033284</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/autograd_graph1.png" alt=" autograd wrapper graph"></p>
+<h4 id="Vector-Jacobian-Products"><a href="#Vector-Jacobian-Products" class="headerlink" title="Vector-Jacobian Products"></a>Vector-Jacobian Products</h4><p><strong>雅克比矩阵</strong></p>
+<p>$\mathbf { J } = \frac { \partial \mathbf { y } } { \partial \mathbf { x } } = \left( \begin{array} { c c c } { \frac { \partial y _ { 1 } } { \partial x _ { 1 } } } &amp; { \cdots } &amp; { \frac { \partial y _ { 1 } } { \partial x _ { n } } } \ { \vdots } &amp; { \ddots } &amp; { \vdots } \ { \frac { \partial y _ { m } } { \partial x _ { 1 } } } &amp; { \cdots } &amp; { \frac { \partial y _ { m } } { \partial x _ { n } } } \end{array} \right)$</p>
+<p><strong>vector-Jacobian product (VJP)</strong></p>
+<p>$\overline { x _ { j } } = \sum _ { i } \overline { y _ { i } } \frac { \partial y _ { i } } { \partial x _ { j } } \quad \overline { \mathbf { x } } = \overline { \mathbf { y } } ^ { \top } \mathbf { J }$</p>
+<p>对于每一个基本操作都需要定义一个VJP<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">primitive_vjps = defaultdict(dict)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">defvjp</span><span class="params">(fun, *vjps, **kwargs)</span>:</span></span><br><span class="line">    argnums = kwargs.get(<span class="string">'argnums'</span>, count())</span><br><span class="line">    <span class="keyword">for</span> argnum, vjp <span class="keyword">in</span> zip(argnums, vjps):</span><br><span class="line">        primitive_vjps[fun][argnum] = vjp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">defvjp(anp.negative, <span class="keyword">lambda</span> g, ans, x: -g)</span><br><span class="line">defvjp(anp.exp,    <span class="keyword">lambda</span> g, ans, x: ans * g)</span><br><span class="line">defvjp(anp.log,    <span class="keyword">lambda</span> g, ans, x: g / x)</span><br><span class="line">defvjp(anp.tanh,   <span class="keyword">lambda</span> g, ans, x: g / anp.cosh(x) **<span class="number">2</span>)</span><br><span class="line">defvjp(anp.sinh,   <span class="keyword">lambda</span> g, ans, x: g * anp.cosh(x))</span><br><span class="line">defvjp(anp.cosh,   <span class="keyword">lambda</span> g, ans, x: g * anp.sinh(x))</span><br></pre></td></tr></table></figure></p>
+<p>上边的代码是截取了autodidact的部分代码，像negative基本操作，求出倒数就是原来基础上取负。整个过程可以划分为三块。</p>
+<ul>
+<li><p>tracing the forward pass to build the computation graph</p>
+</li>
+<li><p>vector-Jacobian products for primitive ops</p>
+</li>
+<li><p>backwards pass</p>
+</li>
+</ul>
+<p>再具体的细节就不粘贴了，有兴趣的同学可以访问我之前贴出的链接，几百行代码，麻雀虽小五脏俱全，非常适合学习。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>Géron, Aurélien. “Hands-On Machine Learning with Scikit-Learn and TensorFlow”<br><a href="https://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/slides/lec10.pdf" target="_blank" rel="noopener">https://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/slides/lec10.pdf</a><br><a href="https://github.com/mattjj/autodidact" target="_blank" rel="noopener">https://github.com/mattjj/autodidact</a></p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

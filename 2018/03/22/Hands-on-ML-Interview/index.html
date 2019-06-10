@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Hands-on ML &amp; Interview | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="最近在看 Hands-on Machine Learning with Scikit-Learn and TensorFlow 这本书，碰巧又要面试新人，于是便从此书中挖掘了一些问题，在此记录下">
+<meta name="keywords" content="Hands-on Machine Learning with Scikit-Learn and TensorFlow,Interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hands-on ML &amp; Interview | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2018/03/22/Hands-on-ML-Interview/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="最近在看 Hands-on Machine Learning with Scikit-Learn and TensorFlow 这本书，碰巧又要面试新人，于是便从此书中挖掘了一些问题，在此记录下">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.685Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hands-on ML &amp; Interview | 王鸣辉的博客">
+<meta name="twitter:description" content="最近在看 Hands-on Machine Learning with Scikit-Learn and TensorFlow 这本书，碰巧又要面试新人，于是便从此书中挖掘了一些问题，在此记录下">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Hands-on ML &amp; Interview</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-03-22" class="post-meta__date date">2018-03-22</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Hands-on-Machine-Learning-with-Scikit-Learn-and-TensorFlow/">Hands-on Machine Learning with Scikit-Learn and TensorFlow</a>, <a class="tags-link" href="/tags/Interview/">Interview</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>最近在看 <strong><em>Hands-on Machine Learning with Scikit-Learn and TensorFlow</em></strong> 这本书，碰巧又要面试新人，于是便从此书中挖掘了一些问题，在此记录下</p>
+<a id="more"></a>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><h3 id="1-Cart树中子节点的Gini-impurity是不是一直小于父节点，为什么？"><a href="#1-Cart树中子节点的Gini-impurity是不是一直小于父节点，为什么？" class="headerlink" title="1.Cart树中子节点的Gini impurity是不是一直小于父节点，为什么？"></a>1.Cart树中子节点的Gini impurity是不是一直小于父节点，为什么？</h3><p>不是，举个例子，有样本5个，类别顺序是， A B A A A<br>此时基Gini impurity为0.32，这时候生成子节点，可以得到 AB 和 AAA<br>此时AB子节点的Gini impurity就是大于父节点的吗，不过整体看，子节点还是要父节点的</p>
+<h3 id="2-决策树模型underfits-时进行特征缩放是否有用"><a href="#2-决策树模型underfits-时进行特征缩放是否有用" class="headerlink" title="2.决策树模型underfits 时进行特征缩放是否有用"></a>2.决策树模型underfits 时进行特征缩放是否有用</h3><p>从决策树的分裂逻辑上可以直观地感受到feature scaling没啥用</p>
+<h3 id="3-决策树训练的时间复杂度是多少"><a href="#3-决策树训练的时间复杂度是多少" class="headerlink" title="3.决策树训练的时间复杂度是多少"></a>3.决策树训练的时间复杂度是多少</h3><p>nmlog(m),其中m为样本数，n为特征数。<br>理解这个比较简单，nmlog(m) = nm * log(m)<br>这里边log(m)就是树高度，每一层的时间复杂度是nm，所以整体就位nmlog(m)</p>
+<h2 id="linear-model"><a href="#linear-model" class="headerlink" title="linear model"></a>linear model</h2><h3 id="1-Feature-Scaling的作用"><a href="#1-Feature-Scaling的作用" class="headerlink" title="1.Feature Scaling的作用"></a>1.Feature Scaling的作用</h3><p>线性模型中feature scaling将各维度特征统一，能提升学习速度，这个在网上可以搜到相关解释，二维特征中圆形往中心逼近的快，而椭圆会比较慢</p>
+<h3 id="2-梯度下降训练逻辑回归是否会陷入局部最小"><a href="#2-梯度下降训练逻辑回归是否会陷入局部最小" class="headerlink" title="2.梯度下降训练逻辑回归是否会陷入局部最小"></a>2.梯度下降训练逻辑回归是否会陷入局部最小</h3><p>逻辑回归中使用的link function是sigmod函数，最后推到出来的loss function是凸函数所以最终会优化到全局最小</p>
+<h2 id="SVM"><a href="#SVM" class="headerlink" title="SVM"></a>SVM</h2><h3 id="1-什么是支持向量"><a href="#1-什么是支持向量" class="headerlink" title="1.什么是支持向量"></a>1.什么是支持向量</h3><p>svm中边界的点就是支持向量</p>
+<h3 id="2-数百万数据，数百万个特征的情况是该使用dual还是primal方式去训练，为什么？"><a href="#2-数百万数据，数百万个特征的情况是该使用dual还是primal方式去训练，为什么？" class="headerlink" title="2.数百万数据，数百万个特征的情况是该使用dual还是primal方式去训练，为什么？"></a>2.数百万数据，数百万个特征的情况是该使用dual还是primal方式去训练，为什么？</h3><p>不能使用对偶形式训练，对偶形式的计算复杂度在m的二次方和三次方之间，其中m指的是数据量。</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

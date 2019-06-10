@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      NSQ学习笔记（三） | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="这次主要是聊一下nsq 的可用性方案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSQ学习笔记（三） | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2016/10/16/NSQ学习笔记（三）/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="这次主要是聊一下nsq 的可用性方案">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://coolshell.cn/wp-content/uploads/2014/01/Two-phase_commit.png">
+<meta property="og:image" content="http://coolshell.cn/wp-content/uploads/2014/01/Three-phase_commit_diagram.png">
+<meta property="og:image" content="http://coolshell.cn/wp-content/uploads/2014/01/Transaction-Across-DataCenter.jpg">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.686Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSQ学习笔记（三） | 王鸣辉的博客">
+<meta name="twitter:description" content="这次主要是聊一下nsq 的可用性方案">
+<meta name="twitter:image" content="http://coolshell.cn/wp-content/uploads/2014/01/Two-phase_commit.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">NSQ学习笔记（三）</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2016-10-16" class="post-meta__date date">2016-10-16</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>这次主要是聊一下nsq 的可用性方案</p>
+<a id="more"></a>
+<p>今天在看go的源代码时发现了个之前没理清楚的地方。就是go的import。<br>之前自己的写法都是包名和路径名统一的，所以模糊了import的具体逻辑，今天看到调用github.com/nsqio/go-nsq的时候，又梳理了一遍。</p>
+<p>import xxx时，xxx为目录，再调用的时候是 package.xxx</p>
+<p>所以我们可以发现如下情况：<br>import github.com/nsqio/go-nsq<br>使用的时候是nsq.consumer</p>
+<p>这是因为目录/../github.com/nsqio/go-nsq<br>而里边的代码是 package nsq</p>
+<hr>
+<p>authd有个坑爹的地方，就是例子里有一条记录login（auth secret)为空，但在实际操作上，如果这个字段为空就代表不会有效果，这是个误导人的地方</p>
+<p>nsq_to_file这个小工具不支持auth，简单的两行代码，设置下</p>
+<hr>
+<h2 id="nsq可用性方案"><a href="#nsq可用性方案" class="headerlink" title="nsq可用性方案"></a>nsq可用性方案</h2><h3 id="常见的可用性方案："><a href="#常见的可用性方案：" class="headerlink" title="常见的可用性方案："></a>常见的可用性方案：</h3><p><strong>Master-Slave</strong></p>
+<ol>
+<li><p>写master，然后slave定期从master那里拉数据。<br>这种情况下如果master崩了，这个时间片的数据会丢失</p>
+</li>
+<li><p>写master，master再写slave，slave写成功后，master返回成功</p>
+</li>
+</ol>
+<p><strong>Master-Master</strong></p>
+<p>Master间的异步做数据同步</p>
+<p><strong>Two/Three Phase Commit(2/3PC)</strong></p>
+<p>2PC分为两段，先vote，再decision</p>
+<p><img src="http://coolshell.cn/wp-content/uploads/2014/01/Two-phase_commit.png" alt="此处输入图片的描述"></p>
+<p>升级版，3PC<br><img src="http://coolshell.cn/wp-content/uploads/2014/01/Three-phase_commit_diagram.png" alt="此处输入图片的描述"></p>
+<p>2PC在一阶段锁，所以如果二阶段时出现问题会锁住整个事物<br>3PC 二阶段都同意了，再锁资源<br><strong>Paxos</strong><br>强一致性算法</p>
+<h4 id="各种方式的对比"><a href="#各种方式的对比" class="headerlink" title="各种方式的对比"></a>各种方式的对比</h4><p><img src="http://coolshell.cn/wp-content/uploads/2014/01/Transaction-Across-DataCenter.jpg" alt="此处输入图片的描述"></p>
+<p><strong>NWR模型</strong></p>
+<p>N个备份，W个写，R个读。R &gt; N - W<br>也就是说，每次读取，都至少读取到一个最新的版本。</p>
+<p>对比notify rocketq，我们可以发现，当设置mem_queue_size = 0时，nsq属于同步写盘，producer请求打到nsq，nsq同步写盘</p>
+<pre><code>func (d *diskQueue) Put(data []byte) error {
+    d.RLock()
+    defer d.RUnlock()
+
+    if d.exitFlag == 1 {
+        return errors.New(&quot;exiting&quot;)
+    }
+
+    d.writeChan &lt;- data
+    // 此处是nsqd有一个ioloop()常驻线程持续接受数据写入
+    return &lt;-d.writeResponseChan
+}
+
+func (d *diskQueue) ioLoop() {
+    ...
+    for {
+        ...
+        select {
+            ...
+        case dataWrite := &lt;-d.writeChan:
+            count++
+            d.writeResponseChan &lt;- d.writeOne(dataWrite)
+            ...
+        }
+    }
+    ...
+}
+</code></pre><p>不过这里边的写盘调用的是 go里边 file.Write 函数，也就是说更新的只是内存中的页缓存，而脏页面不会立即更新到硬盘中。当遇到突然断电，和系统崩溃时还是会有数据丢失。</p>
+<p>横向对比<br>redis的持久化分为RDB快照、AOF<br>AOF中appendfsync可配置三个级别<br>    a. no =&gt; redis不主动调用fsync，何时刷盘由OS来调度；<br>    b. always =&gt; redis针对每个写入命令均会主动调用fsync刷磁盘；<br>    c. everysec =&gt; 每秒调一次fsync刷盘。</p>
+<p>redis always级别采用的是fdatasync，避免写入metadata<br>always 时同步，everysec 又独立进程完成rewrite Aof log</p>
+<hr>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

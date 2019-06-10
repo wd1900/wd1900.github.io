@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      NSQ笔记 | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="最近因为业务量上涨，系统压力比较大，需要对部分逻辑进行解耦，于是想引入个消息系统来搞下">
+<meta name="keywords" content="NSQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSQ笔记 | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2016/10/12/NSQ笔记/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="最近因为业务量上涨，系统压力比较大，需要对部分逻辑进行解耦，于是想引入个消息系统来搞下">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://f.cloud.github.com/assets/187441/1700696/f1434dc8-6029-11e3-8a66-18ca4ea10aca.gif">
+<meta property="og:image" content="http://media.tumblr.com/tumblr_mat85kr5td1qj3yp2.png">
+<meta property="og:image" content="http://media.tumblr.com/tumblr_mavte17V3t1qj3yp2.png">
+<meta property="og:image" content="http://media.tumblr.com/tumblr_mataigNDn61qj3yp2.png">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.688Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSQ笔记 | 王鸣辉的博客">
+<meta name="twitter:description" content="最近因为业务量上涨，系统压力比较大，需要对部分逻辑进行解耦，于是想引入个消息系统来搞下">
+<meta name="twitter:image" content="https://f.cloud.github.com/assets/187441/1700696/f1434dc8-6029-11e3-8a66-18ca4ea10aca.gif">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">NSQ笔记</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2016-10-12" class="post-meta__date date">2016-10-12</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/NSQ/">NSQ</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>最近因为业务量上涨，系统压力比较大，需要对部分逻辑进行解耦，于是想引入个消息系统来搞下<br><a id="more"></a><br>最近因为业务量上涨，系统压力比较大，需要对部分逻辑进行解耦，于是想引入个消息系统来搞下。<br>选择nsq，一是因为别人推荐，二也是语言方面，之前搞过段时间go，觉得上手会比较快，下面简单记录了nsq的一些特点</p>
+<h2 id="NSQ-分布式消息系统"><a href="#NSQ-分布式消息系统" class="headerlink" title="NSQ 分布式消息系统"></a>NSQ 分布式消息系统</h2><h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>支持分布式拓扑，避免单点故障（SPOF）</li>
+<li>水平扩展</li>
+<li>消息延时低</li>
+<li>支持负载均衡以及多播消息路由</li>
+<li>excel at both streaming (high-throughput) and job oriented (low-throughput) workloads</li>
+<li>队列在内存中（也支持写入硬盘）</li>
+<li>实时为消费者发现生产者</li>
+<li>TLS</li>
+<li>数据格式多样</li>
+<li>依赖少（易部署）</li>
+<li>简单的TCP protocol,支持各种语言的client</li>
+<li>HTTP interface for stats, admin actions, and producers</li>
+<li>嵌入statsd</li>
+<li>健壮的集群管理界面（nsqadmin）</li>
+</ul>
+<h3 id="保障"><a href="#保障" class="headerlink" title="保障"></a>保障</h3><ul>
+<li><p>消息高可用<br>系统支持 –mem-queue-size选项，即队列中超过–mem-queue-size的消息内容将会被写入disk中。–mem-queue-size可以被设置为0，即所有消息都写入disk<br>消息没有内置重复，不过有很多权衡方法，比如拓扑、以容错方式主动从属以及将消息保存在磁盘中</p>
+</li>
+<li><p>消息可以多次传递<br>在nsqd节点不挂的情况下，当客户端timeouts, disconnections, requeues时，消息可以被系统再次传递</p>
+</li>
+<li><p>消息无序<br>集群消息无序，不过单nsqd上的消息是有序的。因为nsqd之间无共享</p>
+</li>
+<li><p>consumers eventually find all topic producers<br>依托nsqlookupd,nsqd会与nsqlookupd保持连接</p>
+</li>
+</ul>
+<hr>
+<h3 id="nsq的生产与消费"><a href="#nsq的生产与消费" class="headerlink" title="nsq的生产与消费"></a>nsq的生产与消费</h3><p>目前的分布式消息系统的逻辑在许多方面都是共通的</p>
+<p>Producer生产数据，生产的同时让系统对应产生了一个topic。<br>一个topic下可以对应多个channel，这些channel的数据是都是一样的，复制与topic中。Consumer消费的是channel中的数据，多个Consumer可以消费一个channel，多个consumer消费的数据总和对应的是channel中的数据。</p>
+<p>如下图：</p>
+<p><img src="https://f.cloud.github.com/assets/187441/1700696/f1434dc8-6029-11e3-8a66-18ca4ea10aca.gif" alt="啦啦啦"></p>
+<h3 id="无单点故障（SPOF）"><a href="#无单点故障（SPOF）" class="headerlink" title="无单点故障（SPOF）"></a>无单点故障（SPOF）</h3><p>NSQ在设计初始便是分布式的，NSQ客户端通过TCP连接着所有提供指定topic的nsqd。NSQ没有中间存储，没有消息代理，没有单点故障。</p>
+<p><img src="http://media.tumblr.com/tumblr_mat85kr5td1qj3yp2.png" alt="此处输入图片的描述"></p>
+<h3 id="消息传递保证"><a href="#消息传递保证" class="headerlink" title="消息传递保证"></a>消息传递保证</h3><p>nsq保证消息可被以多次传递，尽管可能会有重复消息。Consumers应该期望这一点，并删除重复数据或执行幂等操作。<br>此项被强制作为协议的一部分执行，并按如下方式工作（假设客户端已成功连接并订阅主题）：</p>
+<ol>
+<li>客户端通知nsqd他们已经准备好接收消息</li>
+<li>NSQ发送消息并在本地临时存储数据（在re-queue或timeout的情况下）</li>
+<li>客户端回复FIN（finsh)或者REQ（re-queue)表明成功或失败。如果客户端在一定时间内没有回复NSQ，则timeout，NSQ将消息re-queue</li>
+</ol>
+<p>这确保了只有当nsqd进程被不正常关闭时，才会引发消息丢失这一唯一的边缘情况。<br>预防消息丢失是极其重要的事情，甚至在边界情况下我们也要保证消息不丢。一个解决方案是容忍消息冗余，在不同的host上存储同样的消息备份。因为consumer应该是幂等的，所以一份消息消费两次并没有什么影响（除了性能），这保证你的系统中一个节点故障后仍然不会丢失消息。</p>
+<p>另外，NSQ提供了一些模块来支持各种生产用例和可配置的持久性。</p>
+<h3 id="内存占用控制"><a href="#内存占用控制" class="headerlink" title="内存占用控制"></a>内存占用控制</h3><p>nsqd提供了一个可配置的选项–mem-queue-size，它决定了给定queue可以在内存中存储的消息数。如果消息数超过之前设定的阈值，消息就会被写入disk中，通过–mem-queue-size参数的设置限制了nsqd进程的内存占用</p>
+<p><img src="http://media.tumblr.com/tumblr_mavte17V3t1qj3yp2.png" alt="此处输入图片的描述"></p>
+<p>聪明的观察者可以发现通过将–mem-queue-size设置为1甚至是0，可以非常方便的去保证消息传递的可靠。disk-backed queue保证了系统有效规避异常重启</p>
+<p>同样，如果想关机的话，可以通过信号，让nsqd将内存里和正在传递的信息存储在硬盘中。</p>
+<p>注意，其名称以字符串#ephemeral结尾的topic/channel不会缓存到磁盘，而是会在传递mem队列大小后丢弃消息。 </p>
+<h3 id="高效"><a href="#高效" class="headerlink" title="高效"></a>高效</h3><p>NSQ被设计为通过“memcached-like”有大小前缀的命令协议进行通信。 所有消息数据保存在core中，包括诸如尝试次数，时间戳等元数据。这避免了在服务器到客户端之间来回复制数据，这是先前工具链在重新排队消息时的固有属性。 这也简化了客户端，他们不再需要维护消息状态。</p>
+<p>针对数据协议，我们做出了一个关键的设计决策，就是主动将数据推送到客户端而非等待它来拉取，来最大化性能和吞吐量。 这个概念，我们称为RDY状态，本质上是一种形式的客户端流控制。</p>
+<p>当客户端连接到nsqd并订阅一个channel时，它被置于RDY状态0。这意味着没有消息将被发送到客户端。 当客户端准备好接收消息时，它发送一个命令，将其RDY状态更新为某个它准备处理消息数目，例如100。无需任何附加命令，100个消息将被推送到客户端，如果它们可用（每次递减该客户端连接的服务器端的RDY计数）。</p>
+<p><img src="http://media.tumblr.com/tumblr_mataigNDn61qj3yp2.png" alt="此处输入图片的描述"></p>
+<p>这是一个显着的性能调节，因为一些下游系统能够更容易地进行批处理消息并且从一个更大的max-in-flight中显著获益。</p>
+<p>显然，因为它要有缓冲和推送的能力，以满足对不同流（chennel）有独立副本的需要，我们生成了一个守护进程，其行为像simplequeue和pubsub组合。 我们的系统将传统的保留上面讨论的工具链，这在简化我们系统的拓扑结构方面是强有力的。</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

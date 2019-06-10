@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      A Simple Convolutional Generative Network for Next Item Recommendation | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="WSDM 2018 摘要  Convolutional Neural Networks (CNNs) have been recently intro- duced in the domain of session-based next item recommendation. An ordered collection of past items the user has interacted">
+<meta name="keywords" content="Recommendation,CNN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Simple Convolutional Generative Network for Next Item Recommendation | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/05/26/A-Simple-Convolutional-Generative-Network-for-Next-Item-Recommendation/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="WSDM 2018 摘要  Convolutional Neural Networks (CNNs) have been recently intro- duced in the domain of session-based next item recommendation. An ordered collection of past items the user has interacted">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/scn1.png">
+<meta property="og:image" content="http://yoursite.com/images/scn2.png">
+<meta property="og:image" content="http://yoursite.com/images/scn3.png">
+<meta property="og:image" content="http://yoursite.com/images/scn4.png">
+<meta property="og:image" content="http://yoursite.com/images/scn5.png">
+<meta property="og:image" content="http://yoursite.com/images/scn6.png">
+<meta property="og:image" content="http://yoursite.com/images/scn7.png">
+<meta property="og:image" content="http://yoursite.com/images/scn8.png">
+<meta property="og:image" content="http://yoursite.com/images/scn9.png">
+<meta property="og:image" content="http://yoursite.com/images/scn10.png">
+<meta property="og:image" content="http://yoursite.com/images/scn11.png">
+<meta property="og:image" content="http://yoursite.com/images/scn12.png">
+<meta property="og:image" content="http://yoursite.com/images/scn13.png">
+<meta property="og:image" content="http://yoursite.com/images/scn14.png">
+<meta property="og:image" content="http://yoursite.com/images/scn15.png">
+<meta property="og:updated_time" content="2019-05-26T16:55:13.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="A Simple Convolutional Generative Network for Next Item Recommendation | 王鸣辉的博客">
+<meta name="twitter:description" content="WSDM 2018 摘要  Convolutional Neural Networks (CNNs) have been recently intro- duced in the domain of session-based next item recommendation. An ordered collection of past items the user has interacted">
+<meta name="twitter:image" content="http://yoursite.com/images/scn1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">A Simple Convolutional Generative Network for Next Item Recommendation</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-05-26" class="post-meta__date date">2019-05-26</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/CNN/">CNN</a>, <a class="tags-link" href="/tags/Recommendation/">Recommendation</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p><strong>WSDM 2018</strong></p>
+<p>摘要</p>
+<blockquote>
+<p>Convolutional Neural Networks (CNNs) have been recently intro- duced in the domain of session-based next item recommendation. An ordered collection of past items the user has interacted with in a session (or sequence) are embedded into a 2-dimensional latent matrix, and treated as an image. The convolution and pooling opera- tions are then applied to the mapped item embeddings. In this paper, we first examine the typical session-based CNN recommender and show that both the generative model and network architecture are suboptimal when modeling long-range dependencies in the item sequence. To address the issues, we introduce a simple, but very effective generative model that is capable of learning high-level representation from both short- and long-range item dependencies. The network architecture of the proposed model is formed of a stack of holed convolutional layers, which can efficiently increase the receptive fields without relying on the pooling operation. Another contribution is the effective use of residual block structure in recom- mender systems, which can ease the optimization for much deeper networks. The proposed generative model attains state-of-the-art accuracy with less training time in the next item recommendation task. It accordingly can be used as a powerful recommendation baseline to beat in future, especially when there are long sequences of user feedback. </p>
+</blockquote>
+<p>目前有挺多CNN结构被用于解决session based中的sequence问题<br>用户发生交互的item序列的embeddings，可以组合成2-D matrix treated as an image<br>目前基于CNN的模型在面对long-range item sequence效果都一般<br>提出一个可以从short- and long-range item dependencis提取high-level representation<br>结构： </p>
+<ol>
+<li>层叠的空洞(stack of holed)卷积来扩大receptive fields</li>
+<li>residual block structure, 易于深度网络的优化</li>
+</ol>
+<p>目前捕捉交互序列的模型主要分两类，RNNs 和CNNs，但是RNNs没办法充分的利用并行计算，在训练和评估的时候速度受限<br><br></p>
+<p>而CNNs在计算时不依赖于之前的状态，因此可以充分并行</p>
+<blockquote>
+<p>Caser [29], abandoned RNN structures, proposing instead a convolutional sequence embedding model, and demonstrated that this CNN-based recommender is able to achieve comparable or superior performance to the popular RNN model in the top-N sequential recommendation task. </p>
+</blockquote>
+<p>t个item，每个item k维embedding，构成t x k embedding matrix</p>
+<p>常见的CNNs模型使用max pooling操作，只保留最大值，来增加receptive field，并处解决变长sequence问题。</p>
+<p><img src="/images/scn1.png" alt=" symbolic differentiation graph"></p>
+<p><strong>Caser</strong>的几个问题</p>
+<ol>
+<li>max pooling在cv领域里是安全可用的，但是在long-range sequence data里可能会丢失important posion and recurrent signals.</li>
+<li>generating the softmax distribution only for the desired item fails to effectively use the compete set of dependencies </li>
+</ol>
+<p>当sequence越长，上述的问题越明显</p>
+<p>为解决上述问题</p>
+<ol>
+<li>直接估计output sequence 分布,而不是最想要的那个</li>
+<li>不使用无效的huge fikers, stack 1D dilated conv layers,增大receptive fieldss model long-range dependencies,不使用pooling layer</li>
+<li>residual network解决深度网络优化问题</li>
+</ol>
+<p>早期序列化推荐主要是马尔科夫链和矩阵分解，但是马尔科夫链不太能拟合序列数据的复杂关系。</p>
+<blockquote>
+<p>For example, in Caser, the authors showed that markov chain approaches failed to model union-level sequential patterns and did not allow skip behaviors in the item sequences. </p>
+</blockquote>
+<p>RNN目前几乎统治着<strong>sequential recommendation</strong>,<code>GRURec</code> -&gt; <code>various RNN variants</code> -&gt; <code>adding personalization , content and contextual feature</code> -&gt; <code>attention mechanism</code> -&gt; <code>different ranking loss</code></p>
+<blockquote>
+<p>Recently, deep learning models have shown state-of-the-art recommendation accuracy in contrast to conventional models. Moreover, RNNs, a class of deep neural networks, have almost dominated the area of sequential recommendations. For example, a Gated Recurrent Unit (GRURec) architecture with a ranking loss was proposed by [15] for session-based recommendation. In the follow-up papers, various RNN variants have been designed to extend the typical one for different application scenarios, such as by adding personalization [25], content [9] and contextual features [27], attention mechanism [7, 20] and different ranking loss functions [14] </p>
+</blockquote>
+<h2 id="MODEL-DESIGN"><a href="#MODEL-DESIGN" class="headerlink" title="MODEL DESIGN"></a>MODEL DESIGN</h2><ol>
+<li>our probability estimator explicitly models the distribution transition of all individual items at once, rather than the final one, in the sequence; </li>
+<li>our network has a deep, rather than shallow, structure; ’</li>
+<li>our convolutional layers are based on the efficient 1D dilated convolution rather than standard 2D convolution; and </li>
+<li>pooling layers are removed. </li>
+</ol>
+<p><img src="/images/scn2.png" alt=" symbolic differentiation graph"></p>
+<p>通常情况，会生成很多子序列数据来进行模型训练</p>
+<p>作者认为优于是分别对子序列去各自优化，不能保证最优结果。而且会导致很多计算上的浪费。<br>后边的实验对此进行了比较</p>
+<h3 id="Network-Architechture"><a href="#Network-Architechture" class="headerlink" title="Network Architechture"></a>Network Architechture</h3><p>input:   length: t  ,  embedding size: 2k</p>
+<p>1D dialted CNNs</p>
+<p><img src="/images/scn3.png" alt=" symbolic differentiation graph"></p>
+<p>b图中，dilation factor 是 1，2，4，8</p>
+<blockquote>
+<p>we denote receptive field, j-th convolutionallayer,channel and dilation as r, Fj, C and l respectively.<br>当卷积核宽度为3时，dilated convolutions的感知区域为 r = 2**(j+1) - 1，而普通卷积的r = 2j + 1</p>
+</blockquote>
+<blockquote>
+<p>Formally, with dilation l, the filter window from location i is given as </p>
+</blockquote>
+<p><img src="/images/scn4.png" alt=" symbolic differentiation graph"></p>
+<blockquote>
+<p>the 1D dilated convolution operator ∗l on element h of the item sequence is given below, where g is the filter function.</p>
+</blockquote>
+<p><img src="/images/scn5.png" alt=" symbolic differentiation graph"></p>
+<p>显然，dilated convolutional structure 更高效的解决了长序列，无需大的卷积核和更深的网络。<br>实际上，增加模型的容量和感知范围，只需重复的1，2，4，8，1，2，4，8这样的摞就可以了。</p>
+<p>与其他模型将t X 2k 理解为2Dmatrix不同，这里把它理解为1 X t X 2k, 2k被看做图片的channel而非，卷积核的宽度。</p>
+<p><img src="/images/scn6.png" alt=" symbolic differentiation graph"></p>
+<p>H(x) = F(x) - x</p>
+<p>(a)中使用1x1的卷积将维度从2k缩到k，再用1x1卷积将其回复为2k，这样可以减少参数的数量</p>
+<p>(a)的参数1 x 1 x 2 k x k + 1 x 3 x k x k + 1 x 1 x k x 2k =  7k**2 </p>
+<p>(b)的参数 1 x 3 x 2k x 2k = 12k**2</p>
+<p><img src="/images/scn7.png" alt=" symbolic differentiation graph"></p>
+<h3 id="Dropout-mask"><a href="#Dropout-mask" class="headerlink" title="Dropout-mask"></a>Dropout-mask</h3><p>避免信息泄露，需要对结构做调整，不能让未来的item信息来预测当前item</p>
+<p><img src="/images/scn8.png" alt=" symbolic differentiation graph"></p>
+<h2 id="Final-Layer-Network-Training-and-Generating"><a href="#Final-Layer-Network-Training-and-Generating" class="headerlink" title="Final Layer, Network Training and Generating"></a>Final Layer, Network Training and Generating</h2><p>优化目标是最大化log-likelihood, 最大化logP 等价于最小化binary cross-entroy loss的和</p>
+<p>softmax开销太大，用smapled softmax和负采样解决</p>
+<h2 id="EXPERIMENTS"><a href="#EXPERIMENTS" class="headerlink" title="EXPERIMENTS"></a>EXPERIMENTS</h2><ul>
+<li><strong>YOO数据集</strong>：因为96%的长度小于10，所以直接移除大于10的4%，作为short-range seq data</li>
+<li><strong>MUSIC数据集</strong>: 大部分人每周听歌上百次，可以作为long-range seq data<br>这两个数据集的效果可以表现出模型在short-range和long-range上的效果</li>
+</ul>
+<p><img src="/images/scn9.png" alt=" symbolic differentiation graph"></p>
+<p><img src="/images/scn10.png" alt=" symbolic differentiation graph"></p>
+<p><img src="/images/scn11.png" alt=" symbolic differentiation graph"></p>
+<p><img src="/images/scn12.png" alt=" symbolic differentiation graph"></p>
+<p><img src="/images/scn13.png" alt=" symbolic differentiation graph"></p>
+<p><img src="/images/scn14.png" alt=" symbolic differentiation graph"></p>
+<p>小数据集上的效果</p>
+<p><img src="/images/scn15.png" alt=" symbolic differentiation graph"></p>
+<p><strong>总结，准确率高，并行度高，训练速度快，相同数目的样本收敛快</strong></p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

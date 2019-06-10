@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Distributed Training &amp; Tensorflow | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="由于场景&amp;amp;数据量的需要，所以之前在组内做了关于分布式训练的分享，这次在博客上发下">
+<meta name="keywords" content="分布式,tensorflw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Distributed Training &amp; Tensorflow | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2018/08/07/Distributed-Training-Tensorflow/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="由于场景&amp;amp;数据量的需要，所以之前在组内做了关于分布式训练的分享，这次在博客上发下">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.689Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Distributed Training &amp; Tensorflow | 王鸣辉的博客">
+<meta name="twitter:description" content="由于场景&amp;amp;数据量的需要，所以之前在组内做了关于分布式训练的分享，这次在博客上发下">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Distributed Training &amp; Tensorflow</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-08-07" class="post-meta__date date">2018-08-07</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/tensorflw/">tensorflw</a>, <a class="tags-link" href="/tags/分布式/">分布式</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>由于场景&amp;数据量的需要，所以之前在组内做了关于分布式训练的分享，这次在博客上发下</p>
+<a id="more"></a>
+<p>以下分别是PPT，以及对应的简单总结</p>
+<p><a href="/files/Distributed Training &amp; Tensorflow.ppt">Distributed Training &amp; Tensorflow.ppt</a></p>
+<h2 id="模型并行（Model-Parallelism）"><a href="#模型并行（Model-Parallelism）" class="headerlink" title="模型并行（Model Parallelism）"></a>模型并行（Model Parallelism）</h2><p>切分模型，每一部分运行在不同的设备上<br>模型并行很复杂，并且依赖于神经网络的结构。<br>例如全连接网络，这种方式通常不会获得太多的收益</p>
+<p>直观的拆分方式是一层一层的拆，分散到不同的设备上，但是上层受下层限制，前一层没训练完时，后面的只能等着，没起到并行的作用</p>
+<p>所以，接下来我们考虑下垂直拆分,这种方法能稍微好点，但是上层需要全部下层的输出，也就意味着有大量的跨设备通信。大规模的学习，一般是跨机器的，此时这样就会更慢了。<br>不过，有一些网络结构，比如cnn，有一些layer只有部分连接到了更底层的layer，这样可以简单并高效的跨设备</p>
+<p>此外，一些RNN模型是由记忆单元组成的，一个cell在t时的输出，被当做t+1时的输入。如果你水平拆分，第一步只有一个device激活，第二步有两个，随着数据传到output层所有设备都同时激活起来。这里仍然有大量的跨设备通信，但是每个单元复杂度是相同的,所以并行的运行多单元的收益是要多过通信的损耗</p>
+<p>简单说，模型并行的方式可以加速某些类型的NN，但不是全部，它需要特别的调优，比如保证通信最多的设备是在同一个机器上</p>
+<h2 id="数据并行（Data-Parallelism）"><a href="#数据并行（Data-Parallelism）" class="headerlink" title="数据并行（Data Parallelism）"></a>数据并行（Data Parallelism）</h2><p>将模型复制在每一个设备上，然后同时接收不同的mini batch数据训练，然后聚合梯度更新模型。</p>
+<p>这里存在两种更新方式 <code>synchronous updates</code> and <code>asynchronous updates</code>.</p>
+<h3 id="synchronous-updates"><a href="#synchronous-updates" class="headerlink" title="synchronous updates"></a>synchronous updates</h3><p>同步更新等待所有梯度计算完毕，才去进行平均。如果有一个设备比其他都要慢，那么其他的device都要等待它，通常梯度计算完毕后,会立即复制到所有device上，此时可能会占满服务器带宽</p>
+<p>优化：为了减少每一步的等待时间，可以忽略来自最慢副本的梯度，一般百分之十左右，比如可以运行20份，只等待18份。参数更新后，18个副本可以立刻开始训练，不需要等剩下的两个。这被叫做18replicas plus 2 spare replicas</p>
+<h3 id="asynchronous-updates"><a href="#asynchronous-updates" class="headerlink" title="asynchronous updates"></a>asynchronous updates</h3><p>当一个副本计算完梯度后，立即用它更新模型参数，不做聚合。副本之间是相互独立的，不需互相等待，这种方式可以每分钟运行更多次</p>
+<p>尽管参数仍然需要在每一步复制到每个设备上，但是不同设备是在不同时间，所以降低了带宽被占满的风险</p>
+<p>异步数据并行是非常有吸引力的选项，它简单，没有同步延迟，更好的利用带宽。实践中效果好的让人惊讶.实际上，当一个副本基于参数计算梯度时，参数将被其他device更新（平均N个设备的话，会被更新N-1次），这里没法保证被计算的梯度是指向正向的方向.当梯度严重过期时，被称为stale gradients，这会减慢收敛，引入噪声和抖动（学习曲线暂时震荡），甚至会发散</p>
+<h4 id="如何减少stale-gradient影响："><a href="#如何减少stale-gradient影响：" class="headerlink" title="如何减少stale gradient影响："></a>如何减少stale gradient影响：</h4><ol>
+<li>减少学习率</li>
+<li>Drop stale gradients or scale them down</li>
+<li>调整mini-batch尺寸</li>
+<li>在最开始的几个epoch只用一个replica（warmup phase）,stale gradient影响</li>
+</ol>
+<p><a href="https://arxiv.org/pdf/1604.00981v2.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1604.00981v2.pdf</a> 谷歌大脑团队2016年论文显示，data parallelism with synchronous using a few spare replicas是最高效的，不止收敛快，而且会产出更好的模型。目前这块还是很活跃的领域，所以不要直接排除掉异步更新</p>
+<h3 id="带宽饱和"><a href="#带宽饱和" class="headerlink" title="带宽饱和"></a>带宽饱和</h3><p>不管是同步还是异步，数据并行都要在每一步训练开始前和参数服务器通信模型参数。这就意味着会有一个点，增加额外的gpu不再提高性能，因为时间都花费在数据移入移出GPU RAM。此时，更多的GPUs只会增加带宽饱和，使训练变慢</p>
+<p>模型越大越密，需要越多的参数和梯度去更新，Saturation也越严重。<br>小模型不太严重（并行训练收益也小）。对于大而稀疏的模型，其梯度多为0，所以通信比较高效。Jeff Debean(nitiator and lead of the Google Brain project ) 称，对于dense model，50 GPUs 可以加速25-40倍。<br>对于sparser model 500GPUs可以加速300倍。<br>具体测试：</p>
+<p>Neural Machine Translation: 6x speedup on 8 GPUs<br>Inception/ImageNet: 32x speedup on 50 GPUs<br>RankBrain: 300x speedup on 500 GPUs</p>
+<h4 id="减少带宽饱和的方法"><a href="#减少带宽饱和的方法" class="headerlink" title="减少带宽饱和的方法"></a>减少带宽饱和的方法</h4><ol>
+<li>尽量将GPUs分布在尽量少的机器上，避免不要的网络损耗</li>
+<li>将参数分散在几个参数服务器上</li>
+<li>减少模型参数的浮点精度，32bits to 16bits,这会减少一半的数据转移，又不会对收敛速度和模型效果有什么影响<br>（甚至可以降低到8-bit,这在移动设备上部署和运行模型很有用，详细可以看Pete Warden的文章 <a href="https://petewarden.com/2016/05/03/how-to-quantize-neural-networks-with-tensorflow/）" target="_blank" rel="noopener">https://petewarden.com/2016/05/03/how-to-quantize-neural-networks-with-tensorflow/）</a></li>
+</ol>
+<p>文章主要参考<code>Hands-on Machine Learning with Scikit-Learn and TensorFlow</code>此书，推荐有空闲的人看看，有助于梳理知识脉络</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

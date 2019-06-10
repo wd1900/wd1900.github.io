@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      caffe_digits | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="最近定了下方向，要搞视频理解方面的东西。因为兄弟部门用caffe做了很多东西，于是打算从caffe入手先去学习学习">
+<meta name="keywords" content="caffe,digits,OS X 10.12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="caffe_digits | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2017/06/23/caffe-digits/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="最近定了下方向，要搞视频理解方面的东西。因为兄弟部门用caffe做了很多东西，于是打算从caffe入手先去学习学习">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.683Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="caffe_digits | 王鸣辉的博客">
+<meta name="twitter:description" content="最近定了下方向，要搞视频理解方面的东西。因为兄弟部门用caffe做了很多东西，于是打算从caffe入手先去学习学习">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">caffe_digits</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2017-06-23" class="post-meta__date date">2017-06-23</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/OS-X-10-12/">OS X 10.12</a>, <a class="tags-link" href="/tags/caffe/">caffe</a>, <a class="tags-link" href="/tags/digits/">digits</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>最近定了下方向，要搞视频理解方面的东西。因为兄弟部门用<code>caffe</code>做了很多东西，于是打算从<code>caffe</code>入手先去学习学习</p>
+<a id="more"></a>
+<h1 id="在mac上部署caffe-digits"><a href="#在mac上部署caffe-digits" class="headerlink" title="在mac上部署caffe + digits"></a>在mac上部署caffe + digits</h1><h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>迫于无奈，手里只有一个mbp，于是只能在mac上装了，mac上装比较麻烦，尤其是<code>OS X 10.12</code>。建议如果有条件的话还是使用<code>ubuntu</code>吧，能省事很多很多</p>
+<h2 id="caffe-安装"><a href="#caffe-安装" class="headerlink" title="caffe 安装"></a>caffe 安装</h2><p>参考 <a href="https://eddiesmo.wordpress.com/2016/12/20/how-to-set-up-caffe-environment-and-pycaffe-on-os-x-10-12-sierra/" target="_blank" rel="noopener">Eddie Smolyansky’s Blog</a></p>
+<p>参考 </p>
+<p>之前按官网推荐安装了<code>anaconda</code>，但官网文档已经比较旧了，据说用这个阻碍其实会更多，果断卸载之。</p>
+<p>换用<code>virtualenvwrapper</code>,很轻便</p>
+<p>然后安装<code>cuda</code> <code>cudnn</code>(我装的8.0.51版本，后边也会有地方和版本对应)</p>
+<p><code>cudnn</code>需要注意下，解压后是cuda目录<br>把对应的lib64、include目录里的东西copy到/usr/local/cuda里</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp include/* /usr/local/cuda/include/*</span><br><span class="line">cp lib64/* /usr/local/cuda/lib64/*</span><br></pre></td></tr></table></figure>
+<p>然后执行<a href="https://gist.github.com/doctorpangloss/f8463bddce2a91b949639522ea1dcbe4" target="_blank" rel="noopener">install_caffe.sh</a></p>
+<p>按如下脚本执行，有错误就解决，补充以及常见问题方案</p>
+<ol>
+<li>下载XCode Command Line Tools for 7.3, 因为NVIDIA 暂时还不支持Xcode 8.0的. 切换到7.3的tools:<blockquote>
+<p>sudo xcode-select –switch /Library/Developer/CommandLineTools</p>
+</blockquote>
+</li>
+</ol>
+<p>待会还要删掉它并使用以下语句切回来, 不然你会用不了brew</p>
+<blockquote>
+<p>sudo xcode-select -s /Applications/Xcode.app/Contents/Developer</p>
+</blockquote>
+<ol start="2">
+<li>BLAS那边你可能会遇到问题，在Makefile.config里加如下几行</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BLAS_INCLUDE := <span class="variable">$(<span class="built_in">shell</span> brew --prefix openblas)</span>/<span class="keyword">include</span></span><br><span class="line">BLAS_LIB := <span class="variable">$(<span class="built_in">shell</span> brew --prefix openblas)</span>/lib</span><br><span class="line">LIB_CUDA := -L/usr/local/cuda/lib -lcuda</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>libcnn.so找不到，这个说起来我有，不知道为啥找不到，所以直接把<br>USE_CUDNN := 1 注掉了</p>
+</li>
+<li><p>下边脚本执行可能还会有些问题，不过大多是缺东西，直接装就行了，然后对应的版本要调整，比如脚本里边是libcaffe.so.1.0.0-rc3，而我这边实际是libcaffe.so.1.0.0等</p>
+</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line"><span class="comment"># Install brew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</span></span><br><span class="line"><span class="comment"># Apple hides old versions of stuff at https://developer.apple.com/download/more/</span></span><br><span class="line"><span class="comment"># Install the latest XCode (8.0).</span></span><br><span class="line"><span class="comment">#   We used to install the XCode Command Line Tools 7.3 here, but that would just upset the most recent versions of brew.</span></span><br><span class="line"><span class="comment">#   So we're going to install all our brew dependencies first, and then downgrade the tools. You can switch back after</span></span><br><span class="line"><span class="comment">#   you have installed caffe.</span></span><br><span class="line"><span class="comment"># Install CUDA toolkit 8.0 release candidate</span></span><br><span class="line"><span class="comment">#   Register and download from https://developer.nvidia.com/cuda-release-candidate-download</span></span><br><span class="line"><span class="comment">#   or this path from https://developer.nvidia.com/compute/cuda/8.0/rc/local_installers/cuda_8.0.29_mac-dmg</span></span><br><span class="line"><span class="comment">#   Select both the driver and the toolkit, no documentation necessary</span></span><br><span class="line"><span class="comment"># Install the experimental NVIDIA Mac drivers</span></span><br><span class="line"><span class="comment">#   Download from http://www.nvidia.com/download/driverResults.aspx/103826/en-us</span></span><br><span class="line"><span class="comment"># Install cuDNN v5 for 8.0 RC or use the latest when it's available</span></span><br><span class="line"><span class="comment">#   Register and download from https://developer.nvidia.com/rdp/cudnn-download </span></span><br><span class="line"><span class="comment">#   or this path: https://developer.nvidia.com/rdp/assets/cudnn-8.0-osx-x64-v5.0-ga-tgz</span></span><br><span class="line"><span class="comment">#   extract to the NVIDIA CUDA folder and perform necessary linking</span></span><br><span class="line"><span class="comment">#   into your /usr/local/cuda/lib and /usr/local/cuda/include folders</span></span><br><span class="line"><span class="comment">#   You will need to use sudo because the CUDA folder is owned by root</span></span><br><span class="line">sudo tar -xvf ~/Downloads/cudnn-<span class="number">8.0</span>-osx-x64-v5.<span class="number">0</span>-ga.tar /Developer/NVIDIA/CUDA-<span class="number">8.0</span>/</span><br><span class="line">sudo ln -s /Developer/NVIDIA/CUDA-<span class="number">8.0</span>/lib/libcudnn.dylib /usr/local/cuda/lib/libcudnn.dylib</span><br><span class="line">sudo ln -s /Developer/NVIDIA/CUDA-<span class="number">8.0</span>/lib/libcudnn.<span class="number">5</span>.dylib /usr/local/cuda/lib/libcudnn.<span class="number">5</span>.dylib</span><br><span class="line">sudo ln -s /Developer/NVIDIA/CUDA-<span class="number">8.0</span>/lib/libcudnn_static.a /usr/local/cuda/lib/libcudnn_static.a</span><br><span class="line">sudo ln -s /Developer/NVIDIA/CUDA-<span class="number">8.0</span>/include/cudnn.h /usr/local/cuda/include/cudnn.h</span><br><span class="line"><span class="comment"># Install the brew dependencies</span></span><br><span class="line"><span class="comment">#   Do not install python through brew. Only misery lies there</span></span><br><span class="line"><span class="comment">#   We'll use the versions repository to get the right version of boost and boost-python</span></span><br><span class="line"><span class="comment">#   We'll also explicitly upgrade libpng because it's out of date</span></span><br><span class="line"><span class="comment">#   Do not install numpy via brew. Your system python already has it.</span></span><br><span class="line"></span><br><span class="line">brew install -vd snappy leveldb gflags glog szip lmdb</span><br><span class="line">brew install hdf5 opencv</span><br><span class="line">brew upgrade libpng</span><br><span class="line">brew tap homebrew/versions</span><br><span class="line"></span><br><span class="line">brew install --build-from-source --with-python -vd protobuf</span><br><span class="line">brew install --build-from-source -vd boost159 boost-python159</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clone the caffe repo</span></span><br><span class="line">cd ~/Documents</span><br><span class="line">git clone https://github.com/BVLC/caffe.git</span><br><span class="line"><span class="comment"># Setup Makefile.config</span></span><br><span class="line"><span class="comment">#   You can download mine directly from here, but I'll explain all the selections</span></span><br><span class="line"><span class="comment">#     For XCode 7.3:</span></span><br><span class="line"><span class="comment">#       https://www.dropbox.com/s/vuy6ha0p7cc5px3/Makefile.config?dl=1</span></span><br><span class="line"><span class="comment">#     For XCode 8.0 and later (Sierra):</span></span><br><span class="line"><span class="comment">#       https://dl.dropboxusercontent.com/u/2891540/caffe_10.12/Makefile.config</span></span><br><span class="line"><span class="comment">#   First, we'll enable cuDNN</span></span><br><span class="line"><span class="comment">#     USE_CUDNN := 1</span></span><br><span class="line"><span class="comment">#   In order to use the built-in Accelerate.framework, you have to reference it.</span></span><br><span class="line"><span class="comment">#   Astonishingly, nobody has written this anywhere on the internet.</span></span><br><span class="line"><span class="comment">#     BLAS := atlas</span></span><br><span class="line"><span class="comment">#     If you use El Capitan (10.11), we'll use the 10.11 sdk path for vecLib:</span></span><br><span class="line"><span class="comment">#       BLAS_INCLUDE := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers</span></span><br><span class="line"><span class="comment">#     Otherwise (10.12), let's use the 10.12 sdk path:</span></span><br><span class="line"><span class="comment">#       BLAS_INCLUDE := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers</span></span><br><span class="line"><span class="comment">#     BLAS_LIB := /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A</span></span><br><span class="line"><span class="comment">#   Configure to use system python and system numpy</span></span><br><span class="line"><span class="comment">#     PYTHON_INCLUDE := /System/Library/Frameworks/Python.framework/Headers \</span></span><br><span class="line"><span class="comment">#          /System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/numpy/core/include</span></span><br><span class="line"><span class="comment">#     PYTHON_LIB := /System/Library/Frameworks/Python.framework/Versions/2.7/lib</span></span><br><span class="line"><span class="comment">#   Configure to enable Python layers. Some projects online need this</span></span><br><span class="line"><span class="comment">#     WITH_PYTHON_LAYER := 1</span></span><br><span class="line">curl https://dl.dropboxusercontent.com/u/<span class="number">2891540</span>/Makefile.config -o Makefile.config</span><br><span class="line"><span class="comment"># Download the XCode Command Line Tools for 7.3, since NVIDIA does not yet support Xcode 8.0's tools</span></span><br><span class="line"><span class="comment">#   http://adcdownload.apple.com/Developer_Tools/Command_Line_Tools_OS_X_10.11_for_Xcode_7.3/Command_Line_Tools_OS_X_10.11_for_Xcode_7.3.dmg</span></span><br><span class="line"><span class="comment"># Now, choose those tools instead</span></span><br><span class="line">sudo xcode-select --switch /Library/Developer/CommandLineTools</span><br><span class="line"><span class="comment"># Go ahead and build.</span></span><br><span class="line">make -j8 all</span><br><span class="line"><span class="comment"># To get python going, first we need the dependencies</span></span><br><span class="line"><span class="comment">#   On a super-clean Mac install, you'll need to easy_install pip.</span></span><br><span class="line">sudo -H easy_install pip</span><br><span class="line"><span class="comment">#   Now, we'll install the requirements system-wide. You may also muck about with a virtualenv.</span></span><br><span class="line"><span class="comment">#   Astonishingly, --user is not better known. </span></span><br><span class="line">pip install --user -r python/requirements.txt</span><br><span class="line"><span class="comment">#   Go ahead and run pytest now. Horrible @rpath warnings which can be ignored.</span></span><br><span class="line">make -j8 pytest</span><br><span class="line"><span class="comment"># Now, install the package</span></span><br><span class="line"><span class="comment">#   Make the distribution folder</span></span><br><span class="line">make distribute</span><br><span class="line"><span class="comment">#   Install the caffe package into your local site-packages</span></span><br><span class="line">cp -r distribute/python/caffe ~/Library/Python/<span class="number">2.7</span>/lib/python/site-packages/</span><br><span class="line"><span class="comment">#   Finally, we have to update references to where the libcaffe libraries are located.</span></span><br><span class="line"><span class="comment">#   You can see how the paths to libraries are referenced relatively</span></span><br><span class="line"><span class="comment">#     otool -L ~/Library/Python/2.7/lib/python/site-packages/caffe/_caffe.so</span></span><br><span class="line"><span class="comment">#   Generally, on a System Integrity Protection -enabled (SIP-enabled) Mac this is no good.</span></span><br><span class="line"><span class="comment">#   So we're just going to change the paths to be direct</span></span><br><span class="line">cp distribute/lib/libcaffe.so.<span class="number">1.0</span>.<span class="number">0</span>-rc3 ~/Library/Python/<span class="number">2.7</span>/lib/python/site-packages/caffe/libcaffe.so.<span class="number">1.0</span>.<span class="number">0</span>-rc3</span><br><span class="line">install_name_tool -change @rpath/libcaffe.so.<span class="number">1.0</span>.<span class="number">0</span>-rc3 ~/Library/Python/<span class="number">2.7</span>/lib/python/site-packages/caffe/libcaffe.so.<span class="number">1.0</span>.<span class="number">0</span>-rc3 ~/Library/Python/<span class="number">2.7</span>/lib/python/site-packages/caffe/_caffe.so</span><br><span class="line"><span class="comment"># Verify that everything works</span></span><br><span class="line"><span class="comment">#   start python and try to import caffe</span></span><br><span class="line">python -c <span class="string">'import caffe'</span></span><br><span class="line"><span class="comment"># If you got this far without errors, congratulations, you installed Caffe on a modern Mac OS X</span></span><br></pre></td></tr></table></figure>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

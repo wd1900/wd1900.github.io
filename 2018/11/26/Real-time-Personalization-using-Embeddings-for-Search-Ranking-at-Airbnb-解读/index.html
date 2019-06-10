@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Real-time Personalization using Embeddings for Search Ranking at Airbnb 解读 | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="最近看到了Airbnb的一篇paper获得了2018年KDD best paper,于是阅读并在组内分享了下，顺便搬到博客上来">
+<meta name="keywords" content="Embeddings,Recommend,Search Ranking,Airbnb,KDD best paper 2018">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Real-time Personalization using Embeddings for Search Ranking at Airbnb 解读 | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2018/11/26/Real-time-Personalization-using-Embeddings-for-Search-Ranking-at-Airbnb-解读/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="最近看到了Airbnb的一篇paper获得了2018年KDD best paper,于是阅读并在组内分享了下，顺便搬到博客上来">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/skipgram_listing.png">
+<meta property="og:image" content="http://yoursite.com/images/embed1.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/embed2.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/map_table.png">
+<meta property="og:image" content="http://yoursite.com/images/type_embedding.png">
+<meta property="og:image" content="http://yoursite.com/images/offline_eval_emb.png">
+<meta property="og:updated_time" content="2019-05-26T16:52:16.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Real-time Personalization using Embeddings for Search Ranking at Airbnb 解读 | 王鸣辉的博客">
+<meta name="twitter:description" content="最近看到了Airbnb的一篇paper获得了2018年KDD best paper,于是阅读并在组内分享了下，顺便搬到博客上来">
+<meta name="twitter:image" content="http://yoursite.com/images/skipgram_listing.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Real-time Personalization using Embeddings for Search Ranking at Airbnb 解读</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-11-26" class="post-meta__date date">2018-11-26</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Airbnb/">Airbnb</a>, <a class="tags-link" href="/tags/Embeddings/">Embeddings</a>, <a class="tags-link" href="/tags/KDD-best-paper-2018/">KDD best paper 2018</a>, <a class="tags-link" href="/tags/Recommend/">Recommend</a>, <a class="tags-link" href="/tags/Search-Ranking/">Search Ranking</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>最近看到了Airbnb的一篇paper获得了2018年KDD best paper,于是阅读并在组内分享了下，顺便搬到博客上来<br><a id="more"></a><br>最近看到了Airbnb的一篇paper获得了2018年KDD best paper <a href="http://delivery.acm.org/10.1145/3220000/3219885/p311-grbovic.pdf?ip=61.135.194.49&amp;id=3219885&amp;acc=OPENTOC&amp;key=4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35%2E054E54E275136550&amp;__acm__=1543248634_1e9984a4c6d29462dd6a1428cb109404" target="_blank" rel="noopener">Real-time Personalization using Embeddings for Search<br>Ranking at Airbnb</a><br>,于是阅读并在组内分享了下，顺便搬到博客上来。<br>此文主要是对论文的重点部分进行翻译性地解读，同时穿插着我自己对各部分理解和想法。如有问题，欢迎指正。</p>
+<p>目前在推荐上比较流行的方案，主要是基于<code>google</code>的<code>wide&amp;deep</code>开启的end to end的模型，uid，itemid作为<code>embedding</code>输入 加上其他各种特征，并着重在wide部分进行优化，比如以<code>deepFM</code>为首的模型。我们自己也是在这个方向上实践的。这篇论文是先单独训练embedding，然后在把embedding当特征输入到rank model中</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>搜索算法的目标就是为了提升网站的收益，在airbnb需要同时优化客人和房主两方，即给定地点和日期后，将位置、价格、风格和评价等方面对用户有吸引力的房子排前。也要考虑房主的偏好，将可能会拒绝客人的排名名降低，比如用户评价差，有宠物，人数等等原因。</p>
+<p>在一个search session中会有多次点击和联系房主，这些都是in-session signals。实时个性化推荐的目标是在搜索会话期间为客人展现更多类似于我们认为他会喜欢的房间，同时，可以用负面信号，如跳过高排名的listings，去减少与之相似的我们认为不喜欢的。</p>
+<p>引入listing embeddings,利用这些相似性去为Search Ranking Model创建个性化特征,驱动相似listing推荐</p>
+<p>由于一般人一年旅行一到两次，在Airbnb的场景中，booking是很稀疏的，其中大量用户只订过一次。为此，训练listing_type级别的embeddings。同样,也学习与 listing _type embeddings 同一向量空间的user_type embeddings.<strong>这里边的一个亮点就是user_type embeddings 和 list_type embeddings是同一空间下的。</strong></p>
+<h3 id="历史工作："><a href="#历史工作：" class="headerlink" title="历史工作："></a>历史工作：</h3><ul>
+<li>Real-time Personalization</li>
+<li>Adapting Training for Congregated Search</li>
+<li>Leveraging Conversions as Global Context</li>
+<li>User Type Embeddings</li>
+<li>Rejections as Explicit Negatives</li>
+</ul>
+<h3 id="效果："><a href="#效果：" class="headerlink" title="效果："></a>效果：</h3><p>CTR相对于现有的模型提升20%</p>
+<hr>
+<p>如上文所说，接下来介绍Listing Embeddings、Listing_type Embeddings 和 User_type Embeddings</p>
+<h3 id="Listing-Embeddings"><a href="#Listing-Embeddings" class="headerlink" title="Listing Embeddings"></a>Listing Embeddings</h3><p>首先定义<code>session</code>，用户的点击序列就是session，两个点击间超过30min就是一个新的session，或者预订了房间也算是结束了一个session。根据此数据集去学习,使用<code>skip-gram model</code>最大化如下目标函数</p>
+<p>$$<br>\mathcal { L } = \sum _ { s \in \mathcal { S } } \sum _ { l _ { i } \in s } \left( \sum _ { - m \geq j \leq m , i \neq 0 } \log \mathbb { P } \left( l _ { i + j } | l _ { i } \right) \right)<br>$$ </p>
+<p>$\mathbb { P } \left( l _ { i + j } | l _ { i } \right)$ 是在临近点击 $l _ { i }$ 情况下，应用soft-max后 $l _ { i + j }$ 被点击的概率:</p>
+<p>$$<br>\mathbb { P } \left( l _ { i + j } | l _ { i } \right) = \frac { \exp \left( \mathbf { v } _ { l _ { i } } ^ { \top } \mathbf { v } _ { l + j } ^ { \prime } \right) } { \sum _ { l = 1 } ^ { | \mathcal { V } | } \exp \left( \mathbf { v } _ { l _ { i } } ^ { \top } \mathbf { v } _ { l } ^ { \prime } \right) }<br>$$</p>
+<p>变量的定义很好理解，l就是listing（paper中的listing我理解就是房子），u就是user，v代指vector，像$v_ { l _ { i } }$就是指listing i的embedding，$\mathcal { V }$代指所有listings集合。</p>
+<p><strong>随机采样当做负例</strong>和传统的skip-gram相同，于是优化目标函数转变为：</p>
+<p>$$<br>\underset { \theta } { \operatorname { argmax } } \sum _ { ( l , c ) \in \mathcal { D } _ { p } } \log \frac { 1 } { 1 + e ^ { - \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { l } } } + \sum _ { ( l , c ) \in \mathcal { D } _ { n } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { l } } } （3）<br>$$<br><br>$\mathcal { D }$ 指数据集， p为positive，n就是negative了。</p>
+<h4 id="Booked-Listing-as-Global-context"><a href="#Booked-Listing-as-Global-context" class="headerlink" title="Booked Listing as Global context:"></a>Booked Listing as Global context:</h4><p>session被分为两种:</p>
+<ol>
+<li>booked sessions  ( i.e. click sessions that end with user booking a listing to stay at</li>
+<li>exploratory sessions (i.e. click sessions that do not end with booking, i.e. users were just browsing</li>
+</ol>
+<p>引入最终预订的listing作为全局上下文，无论其是否在窗口内，帮助优化临近点击listing到预订listing的先关关系。于是<code>booked sessions</code>的embedding更新规则变成：</p>
+<p>$$<br>\underset { \theta } { \operatorname { argmax } } \sum _ { ( l , c ) \in \mathcal { D } _ { p } } \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } v _ { l } } } + \sum _ { ( l , c ) \in \mathcal { D } _ { n } } \log \frac { 1 } { 1 + e ^ { v _ { c } ^ { \prime } v _ { l } } } + \log \frac { 1 } { 1 + e ^ { - v _ { l _ { b } } ^ { \prime } v _ { l } } } （4）<br>$$</p>
+<p><img src="/images/skipgram_listing.png" alt=" Skip-gram model for Listing Embeddings"></p>
+<h4 id="Adapting-Training-for-Congregated-Search"><a href="#Adapting-Training-for-Congregated-Search" class="headerlink" title="Adapting Training for Congregated Search:"></a>Adapting Training for Congregated Search:</h4><p>在线预定一般都是在一个market里去选择，比如你想去London，那么你会在London这个market里去选择。而负样本是全局随机采样的，很可能与正例不在同一个market里，导致同market内学习到的相似性不够好，为此引入同market的随机样本作为额外的负样本。</p>
+<p>$$<br>\underset { \theta } { \operatorname { argmax } } \sum _ { ( l , c ) \in \mathcal { D } _ { p } } \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } v _ { l } } } + \sum _ { ( l , c ) \in \mathcal { D } _ { n } } \log \frac { 1 } { 1 + e ^ { v _ { c } ^ { \prime } v _ { l } } } + \log \frac { 1 } { 1 + e ^ { - v _ { l _ { b } } ^ { \prime } v _ { l } } } + \sum _ { ( l , m_{n} ) \in \mathcal { D } _ { m_{n} } } \log \frac { 1 } { 1 + e ^ { - v _ { m_{n} } ^ { \prime } v _ { l } } }  （5）<br>$$</p>
+<h3 id="cold-start-listing-embedding"><a href="#cold-start-listing-embedding" class="headerlink" title="cold start listing embedding"></a>cold start listing embedding</h3><p>新房子的embedding，用10英里内最相似的三个房子（类型、价格范围）的embedding均值来代替</p>
+<h3 id="Examining-Listing-Embeddings"><a href="#Examining-Listing-Embeddings" class="headerlink" title="Examining Listing Embeddings"></a>Examining Listing Embeddings</h3><p>在8亿的click sessions上训练32维embeddings,进行K-means聚类，可以发现位置相近的聚集在一起，可知学习到了地理位置的相似性。也可以看到相同类型和价格的listing比不同的更相似,如下图：</p>
+<p><img src="/images/embed1.jpeg" alt="Embeddings"></p>
+<p><img src="/images/embed2.jpeg" alt=" Embeddings Evaluation Tool"></p>
+<h2 id="User-type-amp-Listing-type-Embeddings"><a href="#User-type-amp-Listing-type-Embeddings" class="headerlink" title="User-type &amp; Listing-type Embeddings"></a>User-type &amp; Listing-type Embeddings</h2><p>用用户预订序列来训练Embedding，可以捕获cross-market的相似度</p>
+<p>不过这样学习有以下挑战：</p>
+<ul>
+<li>预订是个低频事件，booking sessions数据相较于click sessions少很多。</li>
+<li>许多用户只预订一次，session长度为1是无法被学习的</li>
+<li>对于任何一个实体，要学到有意义的embedding需要实体出现在数据中至少5-10次</li>
+<li>用户两次预订间隔时间很长的话，用户自身偏好可能会改变比如因为职业的改变而对价格敏感度改变</li>
+</ul>
+<p>解决方案，引入Listing_type embeddings</p>
+<p>listing Embeddings 比较适合short-term, in session场景, peronalization还需要基于长期历史的个性化，用户曾经在纽约和伦敦预订过，现在在搜索洛杉矶。这就需要去找到不同market之间的相似性，通过用户的booked list可以捕获此信息。</p>
+<p>给定一个listing_id，根据它的位置，价格，类型，容量，床数等进行规则映射用数据驱动的方式最大化每个listing_type 桶的覆盖范围</p>
+<p>使用Listing_type embeddings来解决这个问题。给定一个listing_id，根据它的位置，价格，类型，容量，床数等进行规则映射，用数据驱动的方式最大化每个listing_type 桶的覆盖范围。Airbnb的映射table如下：<br><img src="/images/map_table.png" alt="map_table"></p>
+<h3 id="Training-Procedure"><a href="#Training-Procedure" class="headerlink" title="Training Procedure"></a>Training Procedure</h3><p><strong>此处我觉得是一个比较有想法的点，就是学习在同一向量空间下的user_type和listing_type embedding</strong></p>
+<p>$s _ { b } = \left( u _ { t y p e _ { 1 } } l _ { t y p e _ { 1 } } , \ldots , u _ { t y p e _ { M } } l _ { t y p e _ { M } } \right) \in \mathcal { S } _ { b }$ 是用户预订序列数据集，将user_type, list_type组合在一起，再拼成一个序列即相当于把他们确定到了一个空间中。<br>于是在skip-gram中， $user_type ( u _ { t } )$为中心项时，目标函数为：</p>
+<p>$$\underset { \theta } { \operatorname { argmax } } \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { b o o k } }  \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } \mathbf { v }_{ u _ { t }} } } + \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { n e g } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { u_{t}} } }$$</p>
+<p> $listing_type ( l _ { t } )$为中心项时，目标函数为：</p>
+<p> $$\underset { \theta } { \operatorname { argmax } } \sum _ { \left( l_ { t } , c \right) \in \mathcal { D } _ { b o o k } }  \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } \mathbf { v }_{ l _ { t }} } } + \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { n e g } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { l_{t}} } }$$</p>
+<p><img src="/images/type_embedding.png" alt="type embeddings"></p>
+<h4 id="Explicit-Negatives-for-Rejections"><a href="#Explicit-Negatives-for-Rejections" class="headerlink" title="Explicit Negatives for Rejections"></a>Explicit Negatives for Rejections</h4><p>不像一般的场景里只考虑用户偏好，Airbnb的这个场景既要考虑用户偏好也要考虑主人的偏好。引入房主拒绝行为，作为房主方的显示反馈。某种层面上会使对用户不敏感的房主和评分一般的客人聚拢，减少客人被拒绝几率，提高预定概率。<br>对于被拒绝的序列，我们优化的目标函数分别变为：</p>
+<p>$$\underset { \theta } { \operatorname { argmax } } \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { b o o k } }  \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } \mathbf { v }_{ u _ { t }} } } + \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { n e g } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { u_{t}} } } + \sum _ { \left( u _ { t } , l_{t} \right) \in \mathcal { D } _ { reject } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { l_{t} } ^ { \prime } \mathbf { v } _ { u_{t}} } }$$</p>
+<p>and</p>
+<p> $$\underset { \theta } { \operatorname { argmax } } \sum _ { \left( l_ { t } , c \right) \in \mathcal { D } _ { b o o k } }  \log \frac { 1 } { 1 + e ^ { - v _ { c } ^ { \prime } \mathbf { v }_{ l _ { t }} } } + \sum _ { \left( u _ { t } , c \right) \in \mathcal { D } _ { n e g } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { c } ^ { \prime } \mathbf { v } _ { l_{t}} } } + \sum _ { \left( l _ { t } , u_{t} \right) \in \mathcal { D } _ { reject } } \log \frac { 1 } { 1 + e ^ { \mathbf { v } _ { u_{t} } ^ { \prime } \mathbf { v } _ { u_{t}} } }$$</p>
+<h2 id="EXPERIMENTS"><a href="#EXPERIMENTS" class="headerlink" title="EXPERIMENTS"></a>EXPERIMENTS</h2><p>这段主要介绍了下训练和离线评估的细节，和listing Embeddings在房间相似推荐中的应用，以及如何将embedding处理为特征提供给Search Ranking Model。</p>
+<h3 id="Training-Listing-Embeddings"><a href="#Training-Listing-Embeddings" class="headerlink" title="Training Listing Embeddings"></a>Training Listing Embeddings</h3><ol>
+<li>30分钟不活跃原则</li>
+<li>移除偶发和短点击（如停留少于30s）</li>
+<li>只保留&gt;=2 的sessions</li>
+<li>匿名session，移除userid</li>
+</ol>
+<p>点击会话分为 exploratory sessions &amp; booked sessions。训练数据中booked sessions过采样5倍达到最好效果.</p>
+<h4 id="Setting-up-Daily-Training"><a href="#Setting-up-Daily-Training" class="headerlink" title="Setting up Daily Training"></a>Setting up Daily Training</h4><ul>
+<li>over multiple months</li>
+<li>每天引入新一天，去掉最早一天的数据</li>
+<li>重新训练是要比增量训练现有的vector效果好。</li>
+</ul>
+<p>模型中，day-to-day vector的变化不会导致矛盾，因为最终使用的是embeddings间的相似度而非具体的vector</p>
+<p><strong>超参</strong></p>
+<ul>
+<li>dimensionality 32</li>
+<li>window size 5</li>
+<li>iterations 10.</li>
+</ul>
+<h4 id="Offline-Evaluation-of-Listing-Embeddings"><a href="#Offline-Evaluation-of-Listing-Embeddings" class="headerlink" title="Offline Evaluation of Listing Embeddings"></a>Offline Evaluation of Listing Embeddings</h4><p>从预订房间开始回溯17个点击，统计预订房间在对应点击时刻的平均位置，比较了如下三个版本：</p>
+<ol>
+<li>d32: trained using (3), </li>
+<li>d32 book: trained with bookings<br>as global context (4) </li>
+<li>d32 book + neg: trained with bookings<br>as global context and explicit negatives from same market (5)</li>
+</ol>
+<p>最终可以发现<code>d32 book + neg</code>效果最好，具体如下图：</p>
+<p><img src="/images/offline_eval_emb.png" alt="Offline evaluation of Listing Embeddings"></p>
+<h4 id="Similar-Listings-using-Embeddings"><a href="#Similar-Listings-using-Embeddings" class="headerlink" title="Similar Listings using Embeddings"></a>Similar Listings using Embeddings</h4><p>Airbnb home listing page有相似房源，会展示相同可用日期下类似的房源,用余弦相似度，最近邻，取top K。</p>
+<p>A\B Test显示，CTR整体提升21%（有入住日期的提升23%，无日期提升20%），在相似房源处进行最终预定的提升4.9%</p>
+<h3 id="Real-time-personalization-in-Search-Ranking-using-Embeddings"><a href="#Real-time-personalization-in-Search-Ranking-using-Embeddings" class="headerlink" title="Real time personalization in Search Ranking using Embeddings"></a>Real time personalization in Search Ranking using Embeddings</h3><p>训练数据 $D_{s} = (x_{i} ,y_{i}), i = 1…K$， K是搜索后返回listing的序号，$x$特征vector，$y$是label</p>
+<ul>
+<li>y = 1 booked</li>
+<li>y = 0.25 contacted but no booked</li>
+<li>y = -0.4 host rejected</li>
+<li>y = 0.01 clicked</li>
+<li>y = 0  just viewed</li>
+</ul>
+<p>每次使用最近30天的数据训练新的ranking model</p>
+<p>特征具体如下：</p>
+<blockquote>
+<p>Feature vector xi for the i-th listing result consists of listing features,<br>user features, query features and cross-features. Listing<br>features are features associated with the listing itself, such as price<br>per night, listing type, number of rooms, rejection rate, etc. Query<br>features are features associated with the issued query, such as number<br>of guests, length of stay, lead days, etc. User features are features<br>associated with the user who is conducting the search, such as<br>average booked price, guest rating, etc. Cross-features are features<br>derived from two or more of these feature sources: listing, user,<br>query. Examples of such features are query listing distance: distance<br>between query location and listing location, capacity fit: difference<br>between query number of guests and listing capacity, price difference:<br>difference between listing price and average price of user’s<br>historical bookings, rejection probability: probability that host will<br>reject these query parameters, click percentage: real-time memorization<br>feature that tracks what percentage of user’s clicks were<br>on that particular listing, etc. The model uses approximately 100<br>features. For conciseness we will not list all of them.</p>
+</blockquote>
+<p>他们使用了<code>pairwise regression</code>的思路去训练了一个<code>GBDT</code>model,使用的<a href="https://github.com/yarny/gbdt" target="_blank" rel="noopener">支持Lambda Rank的gbdt</a>,用NDCG评估。</p>
+<p><strong>Embedding Features for Search Ranking</strong><br>| Feature Name   |      Feature Name      |<br>|———-|:————-:|<br>|EmbClickSim| similarity to clicked listings in Hc<br>|EmbSkipSim| similarity to skipped listings Hs<br>|EmbLongClickSim| similarity to long clicked listings Hlc<br>|EmbWishlistSim| similarity to wishlisted listings Hw<br>|EmbInqSim| similarity to contacted listings Hi<br>|EmbBookSim| similarity to booked listing Hb<br>|EmbLastLongClickSim| similarity to last long clicked listing<br>|UserTypeListingTypeSim| user type and listing type similarity</p>
+<h4 id="User-type-amp-Listing-type-Embedding-Features"><a href="#User-type-amp-Listing-type-Embedding-Features" class="headerlink" title="User-type &amp; Listing-type Embedding Features"></a>User-type &amp; Listing-type Embedding Features</h4><ul>
+<li>500K user types</li>
+<li>500K listing type</li>
+<li>50 million user booking sessions</li>
+</ul>
+<p><strong>Embedding Features Coverage and Importances</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature Name</th>
+<th style="text-align:center">Coverage</th>
+<th>Feature Importance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EmbClickSim</td>
+<td style="text-align:center">76.16%</td>
+<td>5/104</td>
+</tr>
+<tr>
+<td>EmbSkipSim</td>
+<td style="text-align:center">78.64%</td>
+<td>8/104</td>
+</tr>
+<tr>
+<td>EmbLongClickSim</td>
+<td style="text-align:center">51.05%</td>
+<td>20/104</td>
+</tr>
+<tr>
+<td>EmbWishlistSim</td>
+<td style="text-align:center">36.50%</td>
+<td>47/104</td>
+</tr>
+<tr>
+<td>EmbInqSim</td>
+<td style="text-align:center">20.61%</td>
+<td>12/104</td>
+</tr>
+<tr>
+<td>EmbBookSim</td>
+<td style="text-align:center">8.06%</td>
+<td>46/104</td>
+</tr>
+<tr>
+<td>EmbLastLongClickSim</td>
+<td style="text-align:center">48.28%</td>
+<td>11/104</td>
+</tr>
+<tr>
+<td>UserTypeListingTypeSim</td>
+<td style="text-align:center">86.11%</td>
+<td>22/104</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Online-Experiment-Results-Summary"><a href="#Online-Experiment-Results-Summary" class="headerlink" title="Online Experiment Results Summary"></a>Online Experiment Results Summary</h4><p>引入 embedding features后，NDCU提升2.27%，booking DCU增长2.58%</p>
+<h2 id="收获-amp-反思"><a href="#收获-amp-反思" class="headerlink" title="收获&amp;反思"></a>收获&amp;反思</h2><ul>
+<li>我们自己的end to end模型所产生的embedding是否训练的足够充分有效</li>
+<li>尝试引入以其他逻辑训练的embeddings<br>不一定直接引入embedding，论文中引入的实际是相似度</li>
+<li>训练同一向量空间下的embedding是很好的想法，将本来不同的embedding进行了统一</li>
+<li>和平台自身场景、需求进行合理的结合</li>
+</ul>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>
