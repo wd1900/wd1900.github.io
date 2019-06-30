@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://yoursite.com/images/rl_rec_f3.png">
 <meta property="og:image" content="http://yoursite.com/images/rl_rec_f4.png">
 <meta property="og:image" content="http://yoursite.com/images/rl_rec_f5.png">
-<meta property="og:updated_time" content="2019-06-30T05:23:49.286Z">
+<meta property="og:updated_time" content="2019-06-30T14:56:14.205Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Top-K Off-Policy Correction for a REINFORCE Recommender System on Youtube | 王鸣辉的博客">
 <meta name="twitter:description" content="分享一下谷歌的一篇强推荐系统&amp;amp;强化学习相结合的论文，据说获得了Youtube近两年单次上线的最高收益：Top-K Off-Policy Correction for a REINFORCE Recommender System 谷歌这篇paper将强化学习应用于推荐系统之中，获得了很明显的收益，文中仔细的介绍了在Youtube上的具体实践方案，以及每个细节带了什么样的收益，解决了哪些常见推">
@@ -412,7 +412,7 @@ classes that you can use:
 <h4 id="Number-of-actions"><a href="#Number-of-actions" class="headerlink" title="Number of actions"></a>Number of actions</h4><p>我们先测了下top-K中的K。我们用$K \in\{1,2,16,32\}$训练了三个结构相同的模型。The control (production) model is the top-K<br>off-policy model with K = 16. 我们在图5画了5天实验的结果。当K=1时,top-K就是标准的off-policy correction。与基线K = 16相比 K = 1 导致ViewTime掉了0.66%。K = 2 也不好，不过差距变小了，ViewTime下降了0.35%，K = 32的效果类似基线。我们后续的实验显示K = 8 在ViewTime上有一定的正向(+0.15% statistically significant)</p>
 <p><img src="/images/rl_rec_f5.png" alt="f5"></p>
 <h4 id="Capping"><a href="#Capping" class="headerlink" title="Capping"></a>Capping</h4><p>这里我们来探讨下方差减小技术对学到的推荐系统的最终质量的影响。论文Section4.4里weight capping在最初实验里拿到了最大的收益。我们没有观察到normalized importance sampling,or TRPO [36]对指标的提升。我们搞了个回归测试研究weight capping的影响，比较了c = e^3和c = e^5。当我们取消对importance weight的限制时，学到的策略$π_θ$可能会过度适应一些意外获得高回报的logged actions。 Swaminathan和Joachims [43]描述了倾向过拟合的类似效果。 在线上实验中，当the cap on importance weight被增大时，我们观察到ViewTime显着下降了0.52％。</p>
-<h2 id="Conclusion-and-Future-Works"><a href="#Conclusion-and-Future-Works" class="headerlink" title="Conclusion and Future Works"></a>Conclusion and Future Works</h2><p>这篇paper讲了policy gradient-based top-K推荐系统在Youtube上的应用。我们将REINFORCE的action space扩展到数百万这个级别，并且稳定的运行在线上生产环境中。为了展示这种方法的全部收益，我们演示了如何通过结合a learned logging policy和新颖的top K-off-policy correction来解决logged data中的bias。我们进行了广泛的分析和实验，以的重要性并解决这些潜在的biases。 我们认为这些是使强化学习对推荐产生实际影响的重要步骤，并为研究人员和从业人员探索将RL应用于推荐系统提供了坚实的基础。</p>
+<h2 id="Conclusion-and-Future-Works"><a href="#Conclusion-and-Future-Works" class="headerlink" title="Conclusion and Future Works"></a>Conclusion and Future Works</h2><p>这篇paper讲了policy gradient-based top-K推荐系统在Youtube上的应用。我们将REINFORCE的action space扩展到数百万这个级别，并且稳定的运行在线上生产环境中。为了展示这种方法的全部收益，我们演示了如何通过结合a learned logging policy和新颖的top K-off-policy correction来解决logged data中的bias。我们进行了广泛的分析和实验，来衡量了解和解决这些潜在的biases的重要性。 我们认为这些是使强化学习对推荐产生实际影响的重要步骤，并为研究人员和从业人员探索将RL应用于推荐系统提供了坚实的基础。</p>
 <ul>
 <li>Reinforement Learning Framework for Recommender Systems</li>
 <li>Future Work<ul>
