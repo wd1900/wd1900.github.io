@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Top-K Off-Policy Correction for a REINFORCE Recommender System on Youtube | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="分享一下谷歌的一篇强推荐系统&amp;amp;强化学习相结合的论文，据说获得了Youtube近两年单次上线的最高收益：Top-K Off-Policy Correction for a REINFORCE Recommender System 传统监督学习的方案在推荐系统中有局限 system bias 新推荐系统训练使用的样本是当前推荐系统推荐给用户的，而没被推荐的item的反馈无从而知   Pigeo">
+<meta name="keywords" content="Reinforce Learning,Off-Policy,Recommender System,Google,Youtube">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Top-K Off-Policy Correction for a REINFORCE Recommender System on Youtube | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/06/23/Top-K-Off-Policy-Correction-for-a-REINFORCE-Recommender-System-on-Youtube/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="分享一下谷歌的一篇强推荐系统&amp;amp;强化学习相结合的论文，据说获得了Youtube近两年单次上线的最高收益：Top-K Off-Policy Correction for a REINFORCE Recommender System 传统监督学习的方案在推荐系统中有局限 system bias 新推荐系统训练使用的样本是当前推荐系统推荐给用户的，而没被推荐的item的反馈无从而知   Pigeo">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_1.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_t_trajectory.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_rnn.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_context.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_f1.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_tail.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_f2.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_f3.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_f4.png">
+<meta property="og:image" content="http://yoursite.com/images/rl_rec_f5.png">
+<meta property="og:updated_time" content="2019-06-30T04:56:10.439Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Top-K Off-Policy Correction for a REINFORCE Recommender System on Youtube | 王鸣辉的博客">
+<meta name="twitter:description" content="分享一下谷歌的一篇强推荐系统&amp;amp;强化学习相结合的论文，据说获得了Youtube近两年单次上线的最高收益：Top-K Off-Policy Correction for a REINFORCE Recommender System 传统监督学习的方案在推荐系统中有局限 system bias 新推荐系统训练使用的样本是当前推荐系统推荐给用户的，而没被推荐的item的反馈无从而知   Pigeo">
+<meta name="twitter:image" content="http://yoursite.com/images/rl_rec_1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Top-K Off-Policy Correction for a REINFORCE Recommender System on Youtube</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-06-23" class="post-meta__date date">2019-06-23</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Google/">Google</a>, <a class="tags-link" href="/tags/Off-Policy/">Off-Policy</a>, <a class="tags-link" href="/tags/Recommender-System/">Recommender System</a>, <a class="tags-link" href="/tags/Reinforce-Learning/">Reinforce Learning</a>, <a class="tags-link" href="/tags/Youtube/">Youtube</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p><strong>分享一下谷歌的一篇强推荐系统&amp;强化学习相结合的论文，据说获得了Youtube近两年单次上线的最高收益：<a href="https://arxiv.org/pdf/1812.02353.pdf" target="_blank" rel="noopener">Top-K Off-Policy Correction for a REINFORCE Recommender System</a></strong></p>
+<h2 id="传统监督学习的方案在推荐系统中有局限"><a href="#传统监督学习的方案在推荐系统中有局限" class="headerlink" title="传统监督学习的方案在推荐系统中有局限"></a>传统监督学习的方案在推荐系统中有局限</h2><ol>
+<li>system bias<ul>
+<li>新推荐系统训练使用的样本是当前推荐系统推荐给用户的，而没被推荐的item的反馈无从而知</li>
+</ul>
+</li>
+<li>Pigeon-hole(tends to provide myopic recommendations)<ul>
+<li>optimize to maximize directly immediate response </li>
+<li>倾向于推荐大众化的or用户熟悉的item</li>
+</ul>
+</li>
+</ol>
+<h3 id="强化学习在推荐系统中的困难"><a href="#强化学习在推荐系统中的困难" class="headerlink" title="强化学习在推荐系统中的困难"></a>强化学习在推荐系统中的困难</h3><ol>
+<li>Large action space</li>
+<li>Expensive exploration</li>
+<li>Learning off-policy</li>
+<li>Partial observability</li>
+<li>Noisy reward</li>
+</ol>
+<h2 id="Contributions"><a href="#Contributions" class="headerlink" title="Contributions"></a>Contributions</h2><ul>
+<li><strong>REINFORCE Recommender:</strong> We scale a REINFORCE policygradient-based approach to learn a neural recommendation<br>policy in a extremely large action space.</li>
+<li><strong>Off-Policy Candidate Generation:</strong> We apply off-policy<br>correction to learn from logged feedback, collected from an<br>ensemble of prior model policies. We incorporate a learned<br>neural model of the behavior policies to correct data biases.</li>
+<li><strong>Top-K Off-Policy Correction:</strong> We offer a novel top-K offpolicy correction to account for the fact that our recommender outputs multiple items at a time.</li>
+<li><strong>Benefits in Live Experiments:</strong> We demonstrate in live experiments, which was rarely done in existing RL literature,<br>the value of these approaches to improve user long term<br>satisfaction.</li>
+</ul>
+<h3 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h3><ul>
+<li>Agent: candidate generator</li>
+<li>State: user interest, context</li>
+<li>reward: user satisfaction</li>
+<li>Action: nominate from a catalogue of millions of videos</li>
+</ul>
+<p><img src="/images/rl_rec_1.png" alt="user events"></p>
+<h2 id="Data-Source"><a href="#Data-Source" class="headerlink" title="Data Source"></a>Data Source</h2><p>user trajectory</p>
+<p><img src="/images/rl_rec_t_trajectory.png" alt="user events"></p>
+<h2 id="State-Representation"><a href="#State-Representation" class="headerlink" title="State Representation"></a>State Representation</h2><p>尝试了LSTM,GRU，最后使用的Chaos Free RNN(CFN),因为其比较稳定并且高效。</p>
+<script type="math/tex; mode=display">\begin{aligned} \mathbf{s}_{t+1} &=\mathbf{z}_{t} \odot \tanh \left(\mathbf{s}_{t}\right)+\mathbf{i}_{t} \odot \tanh \left(\mathbf{W}_{a} \mathbf{u}_{a_{t}}\right) \\ \mathbf{z}_{t} &=\sigma\left(\mathbf{U}_{z} \mathbf{s}_{t}+\mathbf{W}_{z} \mathbf{u}_{a_{t}}+\mathbf{b}_{z}\right) \\ \mathbf{i}_{t} &=\sigma\left(\mathbf{U}_{i} \mathbf{s}_{t}+\mathbf{W}_{i} \mathbf{u}_{a_{t}}+\mathbf{b}_{i}\right) \end{aligned}</script><p><img src="/images/rl_rec_rnn.png" alt="rnn"></p>
+<h3 id="Adding-Context"><a href="#Adding-Context" class="headerlink" title="Adding Context"></a>Adding Context</h3><p><img src="/images/rl_rec_context.png" alt="context"></p>
+<h2 id="Reward"><a href="#Reward" class="headerlink" title="Reward"></a>Reward</h2><h3 id="Discounted-Future-Reward"><a href="#Discounted-Future-Reward" class="headerlink" title="Discounted Future Reward"></a>Discounted Future Reward</h3><script type="math/tex; mode=display">\mathcal{R}_{s_{t}, a_{t}}=r\left(s_{t}, a_{t}\right)+\gamma r\left(s_{t+1}, a_{t+1}\right)+\gamma^{2} r\left(s_{t+2}, a_{t+2}\right)+\cdots</script><h3 id="Youtube-online-metric"><a href="#Youtube-online-metric" class="headerlink" title="Youtube online metric"></a>Youtube online metric</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>All</th>
+<th>Desktop</th>
+<th>Mobile</th>
+<th>Tablet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Online Metrics</td>
+<td>0.30%</td>
+<td>0.13%</td>
+<td>0.35%</td>
+<td>0.17%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h2><h3 id="Policy-based-RL"><a href="#Policy-based-RL" class="headerlink" title="Policy-based RL"></a>Policy-based RL</h3><p>Learn a stochastic policy $\pi_{\theta}\left(a_{t} | s_{t}\right)=\operatorname{Pr}\left[a_{t} | s_{t} ; \theta\right]$ to maximize cumulative reward</p>
+<script type="math/tex; mode=display">\max _{\theta} \mathbb{E}_{\tau \sim \pi_{\theta}}[\mathcal{R}(\tau)]</script><p><strong>Trajectory generated by following the policy</strong></p>
+<script type="math/tex; mode=display">\tau=\left\{\left(s_{1}, a_{1}\right), \ldots,\left(s_{T}, a_{T}\right)\right\}</script><p><strong>Cumulative reward of the trajectory</strong></p>
+<script type="math/tex; mode=display">\mathcal{R}(\tau)=\sum_{t} r\left(s_{t}, a_{t}\right)</script><p><strong>Method:</strong> Maximize cumulative reward with gradient ascent</p>
+<script type="math/tex; mode=display">\theta \leftarrow \theta+\lambda \nabla_{\theta} \mathbb{E}_{\tau \sim \pi_{\theta}}[\mathcal{R}(\tau)]</script><p><strong>gradient of weighted log-likelihood</strong></p>
+<script type="math/tex; mode=display">\begin{aligned} \nabla_{\theta} \mathbb{E}_{\tau \sim \pi_{\theta}}[\mathcal{R}(\tau)] &=\mathbb{E}_{\tau \sim \pi_{\theta}}\left[\mathcal{R}(\tau) \nabla_{\theta} \log \pi_{\theta}(\tau)\right] \\ &=\mathbb{E}_{\tau \sim \pi_{\theta}}\left[\sum_{t} \mathcal{R}(\tau) \nabla_{\theta} \log \pi_{\theta}\left(a_{t} | s_{t}\right)\right] \end{aligned} (2)</script><h3 id="softmax-over-actions"><a href="#softmax-over-actions" class="headerlink" title="softmax over actions"></a>softmax over actions</h3><script type="math/tex; mode=display">\pi_{\theta}(a | s)=\frac{\exp \left(\mathbf{u}_{s}^{\top} \mathbf{v}_{a}\right)}{\sum_{a^{\prime}} \exp \left(\mathbf{u}_{s}^{\top} \mathbf{v}_{a^{\prime}}\right)}</script><p>Sampled softmax training,<br>serving is preformed by fast nearest neighbor lookup before sampling.</p>
+<h2 id="Off-Policy-Learning"><a href="#Off-Policy-Learning" class="headerlink" title="Off-Policy Learning"></a>Off-Policy Learning</h2><p>不像传统RL,由于环境场景的限制，我们无法通过当前策略与生成的轨迹在线更新策略，而是收集历史的策略（不同于当前更新策略的分布）的反馈行为。<br>实际情况是以几个小时为周期收集数据，在旧策略下的轨迹数据上更新策略参数。<br>由于轨迹数据是由历史策略生产来，公式（2）的naive policy gradient estimator 就不再是无偏的了。</p>
+<p><strong>Address the distribution mismatch with importance weighting.</strong></p>
+<p>Off-policy-corrected gradient estimator :</p>
+<script type="math/tex; mode=display">\sum_{\tau \sim \beta} \frac{\pi_{\theta}(\tau)}{\beta(\tau)}\left[\sum_{t=0}^{|\tau|} R_{t} \nabla_{\theta} \log \left(\pi_{\theta}\left(a_{t} | s_{t}\right)\right)\right]</script><p>importance weight就是：</p>
+<script type="math/tex; mode=display">\frac{\pi_{\theta}(\tau)}{\beta(\tau)}=\frac{\rho\left(s_{0}\right) \prod_{t=0}^{|\tau|} \mathbf{P}\left(s_{t+1} | s_{t}, a_{t}\right) \pi\left(a_{t} | s_{t}\right)}{\rho\left(s_{0}\right) \prod_{t=0}^{|\tau|} \mathbf{P}\left(s_{t+1} | s_{t}, a_{t}\right) \beta\left(a_{t} | s_{t}\right)}=\prod_{t=0}^{|\tau|} \frac{\pi\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)}</script><p>不论怎样从β采样，都可以校正成无偏估计。但importance weight的值会因为链式相乘而迅速变得很大或者很小，从而导致估计的方差变得很大。</p>
+<p>为了减少梯度的方差,忽略t时间后的链式乘积,并采用一阶近似</p>
+<script type="math/tex; mode=display">\prod_{t^{\prime}=0}^{|\tau|} \frac{\pi\left(a_{t^{\prime}} | s_{t^{\prime}}\right)}{\beta\left(a_{t^{\prime}} | s_{t^{\prime}}\right)} \approx \prod_{t^{\prime}=0}^{t} \frac{\pi\left(a_{t^{\prime}} | s_{t^{\prime}}\right)}{\beta\left(a_{t^{\prime}} | s_{t^{\prime}}\right)}=\frac{P_{\pi_{\theta}}\left(s_{t}\right)}{P_{\beta}\left(s_{t}\right)} \frac{\pi\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)} \approx \frac{\pi\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)}</script><p>a biased estimator of the policy gradient with lower<br>variance:</p>
+<script type="math/tex; mode=display">\sum_{\tau \sim \beta}\left[\sum_{t=0}^{|\tau|} \frac{\pi_{\theta}\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)} R_{t} \nabla_{\theta} \log \pi_{\theta}\left(a_{t} | s_{t}\right)\right] (3)</script><p>Achiam et al. [1]  证明了在总奖励的一阶近似影响限制在 $O\left(E_{s \sim d^{\beta}}\left[D_{T V}(\pi | \beta)[s]\right]\right)$,  $D_{T V}$ 是 $\pi(\cdot | s)$ 和 $\beta(\cdot | s)$ 的variance, $d^{\beta}$ 是discounted future state distribution </p>
+<blockquote>
+<p>This estimator trades off the variance of the exact off-policy correction while still correcting for the large bias of a non-corrected policy gradient, which is better suited for on-policy learning.</p>
+</blockquote>
+<h3 id="Parametrising-the-policy-π"><a href="#Parametrising-the-policy-π" class="headerlink" title="Parametrising the policy π"></a>Parametrising the policy π</h3><p><img src="/images/rl_rec_f1.png" alt="f1"></p>
+<h3 id="Estimating-the-behavior-policy-β"><a href="#Estimating-the-behavior-policy-β" class="headerlink" title="Estimating the behavior policy β"></a>Estimating the behavior policy β</h3><p> 公式(3)中有个困难是获取策略$\beta$, 理想情况下我们可以记录策略选择的action的概率，但是在这个场景下</p>
+<ol>
+<li>系统中有很多agents，其中许多我们无法控制</li>
+<li>一些agents有确定性策略，设$\beta$为0或1无法高效利用logged feedback.</li>
+</ol>
+<p>因此采用[39]中提出的方法，用记录下来的行为来估计多agents的混合策略$\beta$.</p>
+<blockquote>
+<p>Given a set of logged feedback $\mathcal{D}=\left\{\left(\mathbf{s}_{i}, a_{i}\right), i=1, \cdots, N\right\}$, Strehlet al. [39] estimates $\hat{\beta}(a)$ independent of user state by aggregate action frequency throughout the corpus. </p>
+</blockquote>
+<p>相反，我们采用了上下文独立的neural estimator。对每一个被收集的state-action pair，用另一个softmax估计$\hat{\beta}_{\theta^{\prime}}(a|s)$</p>
+<p>如图1，我们重复利用了从RNN生成出来的用户状态 s， 用另一个softmax层对混合策略进行建模。为了避免其对生成用户状态的主策略影响，block掉其对梯度的回传。我们也尝试过将两个策略分开建模，不过这带来了额外的计算开销，并且没有任何指标在离线和线上实验有提升。</p>
+<p>尽管两个策略共享参数，但是他们之间有两个显著的区别：</p>
+<ol>
+<li>考虑到长期奖励，主策略$\pi_{\theta}$使用带权的softmax训练，而$\beta_{\theta^{\prime}}$仅用 state-action pairs训练。</li>
+<li>$\pi_{\theta}$用轨迹上非零奖励的item训练，而$\beta_{\theta^{\prime}}$使用轨迹上的全部item，以免在估计$\beta$中引入bias</li>
+</ol>
+<blockquote>
+<p>In [39], it is argued that that a behavior policy that is deterministically choosing an action a given state s at time t1 and action b at time t2 can be treated as randomizing between action a and b over the timespan of the logging.</p>
+</blockquote>
+<p>本文也同样认同上边的观点，这也解释了为什么行为策略可以是0或者1的确定性策略。除此之外，因为我们同时有多个策略，如果一个策略固定在状态s下选择行为a，而另一个策略会固定选择行为b，那么估计$\hat{\beta}_{\theta^{\prime}}$ 将近似于在状态s下动作a发生的频率。</p>
+<h2 id="Top-K-Off-Policy-Correction"><a href="#Top-K-Off-Policy-Correction" class="headerlink" title="Top-K Off-Policy Correction"></a>Top-K Off-Policy Correction</h2><p>另一个挑战是我们会一次性给用户推荐一页共K个item，用户可能会全部看到也可能只会看到一部分，并可能与不止一个item发生交互，我们需要选择一系列相关的item而非一个item。也就是说我们要找到一个策略$\Pi_{\Theta}(A | s)$,每个动作A选择k个items，去最大化预期累计收益。</p>
+<script type="math/tex; mode=display">\max _{\Theta} \mathbb{E}_{\tau \sim \Pi_{\theta}}\left[\sum_{t} r\left(s_{t}, A_{t}\right)\right]</script><p>通过策略动作 $s_{0} \sim \rho_{0}, A_{t} \sim \Pi\left( | s_{t}\right), s_{t+1} \sim \mathbf{P}\left(\cdot | s_{t}, A_{t}\right)$ 可以得到轨迹$\tau=\left(s_{0}, A_{0}, s_{1}, \cdots\right)$<br>但是这样动作空间会呈指数级增长，当候选集有几百万的时候，更是大的可怕。<br>为了解决问题，我们假定一组不重复items的预期奖励等于每个item预期奖励的总和（This assumption holds if users inspect each item on a page independently）</p>
+<p>另外我们限制自己通过softmax 策略独立采样每个item a 并去重，生成一组动作A。</p>
+<script type="math/tex; mode=display">\Pi_{\Theta}\left(A^{\prime} | s\right)=\prod_{a \in A^{\prime}} \pi_{\theta}(a | s)</script><p>这里$A^{\prime}$包含重复items，A是去重后的集合。</p>
+<p>在上述假设下，我们可以通过简单修改方程式(2)的梯度更新逻辑，来调整强化学习算法。</p>
+<script type="math/tex; mode=display">\sum_{\tau \sim \pi_{\theta}}\left[\sum_{t=0}^{|\tau|} R_{t} \nabla_{\theta} \log \alpha_{\theta}\left(a_{t} | s_{t}\right)\right]</script><p>$\alpha_{\theta}(a | s)=1-\left(1-\pi_{\theta}(a | s)\right)^{K}$ 是item a出现在非重复集合A的概率。这里 K = |A‘| &gt; |A| = k。<br>我们可以通过将$\pi_{\theta}$替换为$\alpha_{\theta}$去更新公式(3)，来引入top-K off-policy 修正因子。</p>
+<script type="math/tex; mode=display">\begin{aligned} & \sum_{\tau \sim \beta}\left[\sum_{t=0}^{|\tau|} \frac{\alpha_{\theta}\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)} R_{t} \nabla_{\theta} \log \alpha_{\theta}\left(a_{t} | s_{t}\right)\right] \\=& \sum_{\tau \sim \beta}\left[\sum_{t=0}^{|\tau|} \frac{\pi_{\theta}\left(a_{t} | s_{t}\right)}{\beta\left(a_{t} | s_{t}\right)} \frac{\partial \alpha\left(a_{t} | s_{t}\right)}{\partial \pi\left(a_{t} | s_{t}\right)} R_{t} \nabla_{\theta} \log \pi_{\theta}\left(a_{t} | s_{t}\right)\right] \end{aligned} (6)</script><p>比较公式(6)和公式(3)，top-K policy增加了一个额外的乘数</p>
+<script type="math/tex; mode=display">\lambda_{K}\left(s_{t}, a_{t}\right)=\frac{\partial \alpha\left(a_{t} | s_{t}\right)}{\partial \pi\left(a_{t} | s_{t}\right)}=K\left(1-\pi_{\theta}\left(a_{t} | s_{t}\right)\right)^{K-1} （7）</script><p>我们可以仔细的看一下这个额外的乘数：</p>
+<ul>
+<li>随着$\pi_{\theta}(a|s) \rightarrow 0, \lambda_{K}(s, a) \rightarrow K$, 相比于标准的off-policy correction，top-K off-policy correction 的更新增大K倍。</li>
+<li>随着$\pi_{\theta}(a|s) \rightarrow 1, \lambda_{K}(s, a) \rightarrow 0$, 乘数会使策略更新趋向于0</li>
+<li>随着K的增加，乘数减少梯度到0会快于$\pi_{\theta}(a|s)$来达到一个合理的范围</li>
+</ul>
+<p>总之，当期望项目在softmax策略πθ中具有小质量时，前K校正比标准校正更积极地推高其可能性。 一旦softmax政策πθ（·| s）在理想项目上投入合理的质量（以确保它可能出现在前K项），则校正后将梯度归零并且不再试图推高其可能性。 这反过来允许其他感兴趣的项目在softmax policy中占据一些质量。 正如我们将在模拟和实时实验中展示的那样，当标准的off-policy correctuib收敛于选择单个项目时最优的策略时，top-K correction会产生更好的top-K 推荐。</p>
+<h2 id="Variance-Reduction-Techniques"><a href="#Variance-Reduction-Techniques" class="headerlink" title="Variance Reduction Techniques"></a>Variance Reduction Techniques</h2><p>如前文所说，我们使用一阶近似去减少梯度估计得方差。但是由于大的importance weight,梯度仍然会有很大的方差.大的importance weight是由于新策略和旧策略偏差大，尤其在旧策略探索比较少的区域。That is,$\pi(a | s) \gg \beta(a | s)$ and d (2) large variance in the β estimate.<br>我们测试了在counterfactual learning和RL文献中提出的几种技术来控制梯度估计的方差。这些技术中的大部分可降低方差,但代价是在梯度估计中引入一些偏差。</p>
+<p><strong>Weight Capping.</strong></p>
+<script type="math/tex; mode=display">\overline{\omega}_{c}(s, a)=\min \left(\frac{\pi(a | s)}{\beta(a | s)}, c\right) (8)</script><p><strong>Normalized Importance Sampling (NIS).</strong></p>
+<script type="math/tex; mode=display">\overline{\omega}_{n}(s, a)=\frac{\omega(s, a)}{\sum_{\left(s^{\prime}, a^{\prime}\right) \sim \beta} \omega\left(s^{\prime}, a^{\prime}\right)}</script><p>n是batch size,n增加等价于调低学习率</p>
+<p><strong>Trusted Region Policy Optimization (TRPO).</strong><br>TRPO 通过增加正则项，惩罚两个策略间的KL散度，来预防新策略π偏离行为策略，取得的效果类似于梯度裁剪。</p>
+<h3 id="Address-System-Bias"><a href="#Address-System-Bias" class="headerlink" title="Address System Bias"></a>Address System Bias</h3><p><strong>Logged trajectories</strong></p>
+<script type="math/tex; mode=display">\tau_{u}=\left\{\left(s_{0}, a_{0}, r_{0}\right),\left(s_{1}, a_{1}, r_{1}\right), \ldots,\left(s_{T_{u}}, a_{T_{u}}, r_{T_{u}}\right)\right\}</script><p><strong>On-policy update:</strong><br>$\theta \leftarrow \theta+\lambda \frac{1}{N} \sum_{\tau \sim \pi_{\theta}} \sum_{t} \mathcal{R}_{s_{t, a_{t}}} \nabla_{\theta} \log \pi_{\theta}\left(a_{t} | s_{t}\right)$</p>
+<p><strong>Off-policy update:</strong><br>$\theta \leftarrow \theta+\lambda \frac{1}{N} \sum_{\tau \sim \beta_{\theta^{\prime}}} \frac{\pi_{\theta}(\tau)}{\beta_{\theta^{\prime}}(\tau)} \sum_{t} \mathcal{R}_{s_{t}, a_{t}} \nabla_{\theta} \log \pi_{\theta}\left(a_{t} | s_{t}\right)$</p>
+<p>实验组可以更倾向于尾部</p>
+<p><img src="/images/rl_rec_tail.png" alt="tail"></p>
+<h2 id="Exploration"><a href="#Exploration" class="headerlink" title="Exploration"></a>Exploration</h2><p>训练数据的分布对于学习一个好策略很重要。现在，探索现有系统很少采取的行动的Exploration policies已经被广泛研究。实践中，暴力探索如 ϵ-greedy，在Youtube中是不合适的，它大概率会导致一些不合适宜的推荐和不好的用户体验。, Schnabel et al. [35] 研究了探索的成本。<br>我们使用了Boltzmann exploration [12] 在不影响用户体验的情况下得到探索数据的好处。我们考虑采用随机策略，即推荐item是从$\pi_{\theta}$采样而来，而非概率最高的K个items。这里计算开销是个挑战，我们需要计算完整的softmax。因此我们使用最近邻方案去寻找top M个items，算一个小的softmax，再据此进行采样。通过让 M &gt;&gt; K,我们仍可以得到大部分probability mass，限制不好推荐项的风险，保证计算效率。实践中，我们通过返回K’个prob最高的items，和从M-K’中采样K-K’个items来平衡EE问题（exploration and exploitation）</p>
+<h2 id="Simulation"><a href="#Simulation" class="headerlink" title="Simulation"></a>Simulation</h2><p>我们首先设计模拟实验，以便在更加可控的环境下阐明off-policy correction。 为了简化我们的模拟，我们假设问题是无状态的，换句话说，奖励R独立于用户状态，并且动作也不会改变用户状态。因此，可以独立地选择轨迹上的每个动作.</p>
+<h3 id="Off-policy-correction"><a href="#Off-policy-correction" class="headerlink" title="Off-policy correction"></a>Off-policy correction</h3><p>第一个模拟实验中，我们假设有10个items $\mathcal{A}=\left\{a_{i}, i=1, \cdots, 10\right\}$,$r\left(a_{i}\right)=i$。当我们选择一个item时，最优策略就是一直选第十个，因为其奖励最大。</p>
+<script type="math/tex; mode=display">
+\pi^{*}\left(a_{i}\right)=\mathbb{I}(i=10)</script><p>我们用无状态softmax参数化$\pi{\theta}$,</p>
+<script type="math/tex; mode=display">
+\pi\left(a_{i}\right)=\frac{e^{\theta_{i}}}{\sum_{j} e^{\theta_{j}}}</script><p>从行为策略β采样，不考虑数据bias，如公式(1)简单地用用策略梯度</p>
+<script type="math/tex; mode=display">
+\pi\left(a_{i}\right)=\frac{r\left(a_{i}\right) \beta\left(a_{i}\right)}{\sum_{j} r\left(a_{j}\right) \beta\left(a_{j}\right)}</script><p>这有一个明显的缺点，行为策略越选择次优item，新的策略就约会偏向选同一个item。</p>
+<p>图2比较了当策略β倾向选择奖励最少的item时，有无off-policy修正下的$\pi{\theta}$。如图2所示，左边为不考虑数据偏差简单应用策略梯度，导致sub-optimal policy。最坏情况，行为策略一直选奖励最少的，我们也会学到一个类似旧策略的不好的策略（比如一直选奖励最少的）。而应用off-policy correction让我们学到一个最优策略$\pi{*}$,不论收集的数据如何，如图(2)右边所示</p>
+<p><img src="/images/rl_rec_f2.png" alt="f2"></p>
+<h3 id="Top-K-off-policy-correction"><a href="#Top-K-off-policy-correction" class="headerlink" title="Top-K off-policy correction"></a>Top-K off-policy correction</h3><p>为了理解标准off-policy correction和top-K off-policy correction的区别，我们设计了个可以推荐多个items的实验。同样我们假设有10 items，$r\left(a_{1}\right)=10, r\left(a_{2}\right)=9$ , 剩下的奖励都是1，$r\left(a_{i}\right)=1, \forall i=3, \cdots, 10$。我们专注于推荐两个item，即K = 2。行为策略β是均匀分布，每个item有同等的机会。</p>
+<p>从β中采样到$\left(a_{i}, r_{i}\right)$,标准的off-policy correction有以下形式的SGD更新，</p>
+<script type="math/tex; mode=display">
+\theta_{j}=\theta_{j}+\eta \frac{\pi_{\theta}\left(a_{j}\right)}{\beta\left(a_{j}\right)} r\left(a_{i}\right)\left[\mathbb{I}(j=i)-\pi_{\theta}\left(a_{j}\right)\right], \quad \forall j=1, \cdots, 10</script><p>SGD持续增加$a_i$与$π_θ$下的预期奖励成比例的可能性，直到$\pi_{\theta}\left(a_{i}\right)=1$，此时梯度变为0。<br>而top-K off-policy correction有另一种更新形式，</p>
+<script type="math/tex; mode=display">\theta_{j}=\theta_{j}+\eta \lambda_{K}\left(a_{i}\right) \frac{\pi_{\theta}\left(a_{j}\right)}{\beta\left(a_{j}\right)} r\left(a_{i}\right)\left[\mathbb{I}(j=i)-\pi_{\theta}\left(a_{j}\right)\right], \quad \forall j=1, \cdots, 10</script><p>当$\pi_{\theta}\left(a_{i}\right)$很小时，$\lambda_{K}\left(a_{i}\right) \approx K$, SGD会更激进的增加$a_i$的可能性。当$\pi_{\theta}\left(a_{i}\right)$到一个足够大的值时$\lambda_{K}\left(a_{i}\right)$ 接近于0。因此，即使$\pi_{\theta}\left(a_{i}\right)$仍然小于1，SGD也不再强制增加item的可能性。这反过来使第二好的项目在学习的策略中占有一些地位。</p>
+<p><img src="/images/rl_rec_f3.png" alt="f3"></p>
+<p>图3左边展示了标准方式和top-K学到的策略$\pi_\theta$.我们可以看到虽然从标准off-policy correction学到的策略已经被校准[23]过，切它也按奖励的大小保证了顺序，但是收敛的策略几乎将整个质量全部集中于top-1 item，即$\pi\left(a_{1}\right) \approx 1.0$。这导致策略基本没有学到次优项（本例中的$a_2$）和其余之间的区别.而top-K correction的收敛策略在保证item顺序于奖励顺序一致的情况下，也为第二的item保留了significant mass。因此，我们可以为用户推荐两个高奖励的items，获得更高的整体奖励。</p>
+<h2 id="Live-Experiments"><a href="#Live-Experiments" class="headerlink" title="Live Experiments"></a>Live Experiments</h2><p><strong>这是Youtube近两年以来单次上线取得的最大收益</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>All</th>
+<th>Desktop</th>
+<th>Mobile</th>
+<th>Tablet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Online Metrics</td>
+<td>0.86%</td>
+<td>0.36%</td>
+<td>1.04%</td>
+<td>0.68%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>我们在Youtube的RNN候选生成模型做了一些列AB实验。这个模型是众多候选生成模型中的一个，在展示前会有一个独立的rank model去进行打分排序。模型根据上述RL算法来训练，实时奖励反应着用户的行为，推荐的视频没被点击的奖励为0.长期奖励R会在4-10小时内做聚合。每个实验中control model和test model用相同的reward函数。实验运行了很多天，模型在线上持续训练，新事件会在24小时内训练。实验期间，我们关注了各种线上指标，不过这里我们主要关注用户观看视频时长,ViewTime.</p>
+<p>这里介绍的实验描述了对生产系统的多个连续改进。 所以，最新的推荐系统为下一个实验提供训练数据，这导致一旦生产系统采用新方法，后续实验就不能与早期系统进行比较。 因此，以下每个实验会作为组件单独分析，并在每个部分中说明新方法接收数据是由什么推荐系统提供的。</p>
+<h3 id="Exploration-1"><a href="#Exploration-1" class="headerlink" title="Exploration"></a>Exploration</h3><p>我们首先要理解exploratory data 在提高模型质量方面的价值。 特别是，我们想衡量是否要在之前描述的采样softmax模型下使用随机策略，要比一直根据softmax推荐概率最高的K个item的模型要好。<br>我们先弄一组实验对比随机策略和确定性出一个。在实验中，控制群体使用确定性策略，而一小部分测试流量用随机策略，如<strong>Exploration</strong>节所述。<br>两个实验都是基于公式(2)里的softmax模型训练。为了控制随机策略的随机性，我们调整公式(5)的temperature.一个较低的T是随机策略偏向于确定性策略，而T值变大会导致item的推荐偏向于等概率随机。<br>当T设为1时，ViewTime没有统计显著性变化，这表明采样所引入的这些随机性没有直接伤害用户体验。</p>
+<p>但是这个实验的设置没有考虑有探索数据对于训练的益处。从历史记录数据中学习的一个主要偏差是模型没有观察到前一个推荐策略未选择的Action的反馈,探索性数据会缓解这一问题。我们有搞了一个跟进实验，在训练中引入了探索数据。为此，我们首先将平台用户分为了3个buckets，90%，5%，5%。前两个buckets基于确定性模型使用确定性策略，最后一个bucket用基于带探索性数据训练模型的stochastic policy。确定性模型用前两个buckets训练，随机模型用第一个和第三个bucket训练。这样两个模型训练使用的数据量时相等的，但随机模型会因为探索数据更容易观察到一些罕见的state,action pair.</p>
+<p>按此实验流程，我们观察到测试群体中的ViewTime统计学显著性地增加了0.07％。 虽然改进不大，但它来自相对少量的勘探数据（只有5％的用户在用随机政策）。随着随机政策的全面启动，我们预计会有更高的收益。</p>
+<h3 id="Off-policy-Correction"><a href="#Off-policy-Correction" class="headerlink" title="Off-policy Correction"></a>Off-policy Correction</h3><p>使用完随机策略之后，我们在训练中引入off-policy correction。这块我们用了更传统的A/B测试设置,都使用了全部数据。实际上，我们用了很少的用户作为测试人群，所以数据基本全部来自control model。control model由公式(2)确定，只用reward调整样本的权重。测试模型使用图1的结构，即用来学习 serving policy $\pi_{\theta}$ 也学习 behavior policy $\beta_{\theta_{\prime}}$. serving policy 用公式(3)中off-policy correction 训练，样本权重不止依赖与reward，还依赖importance weight$\frac{\pi_{\theta}}{\beta_{\theta^{\prime}}}$ 去解决data bias。</p>
+<p>在实验期间，我们观察到学习策略（测试）的开始是通过行为策略（控制）获取的数据。图4绘制了由我们的提名者根据对照人群中的视频等级在对照和实验中选择的视频的CDF（rank 1是control model中推荐最多的视频，最右边是最少被推荐的视频）。我们可以看到test model（绿色）更倾向于那些较少被control model探索过的视频。我们看到top ranks之外的视频被推荐数提升了三倍，这与我们在图2中展现的模拟实验结论是一致的。当忽略数据收集与处理的bias会产生<strong>强者恒强</strong>的现象。因此视频被推荐，可能仅仅是因为他在behavior policy里曾大量被推荐，而off-policy correction可以帮忙解决这个问题。</p>
+<p><img src="/images/rl_rec_f4.png" alt="f4"></p>
+<p>有趣的是,在线上实验中,我们并没有观察到control与test群体之间的 ViewTime 发生统计显著性变化。然而,我们看到视频数量增加了0.53%,这在统计学上是显著的,这表明用户确实得到了更多的享受。（注：个人觉得这个对发文侧会有一个显著的促进，作者留存应该会提升，长期看也对用户也是正向的，不过谷歌这篇论文没有提</p>
+<h3 id="Top-K-Off-Policy"><a href="#Top-K-Off-Policy" class="headerlink" title="Top-K Off-Policy"></a>Top-K Off-Policy</h3><p>我们现在聚焦于理解是否Top-K off-policy比标准的off-policy提升用户体验。我们用同样的模型结构使用公式6的top-K off-policy<br>corrected梯度更新训练，然后和上一节的off-policy模型比较。在本实验中,我们让方程 (8)的 K = 16 和上限 c=e^3 ;后边我们会更详细地探讨这些超参数。</p>
+<p>虽然我们之前测试过的标准off-policy correction过于关注top-1 item，而top-K off-policy correction收敛于更平稳的政策，其中会有non-zero mass在用户其他感兴趣的项目上。<br>这反过来导致更好的top-K推荐。 鉴于我们可以推荐多个项目，top-K policy让我们向用户提供比标准off-policy correction更好的整体体验。 特别是，我们发现测试流量中ViewTime增加了0.85％，观看的视频数量略微减少了0.16％。（注：短视频的话，可以再关注下finish指标的变化</p>
+<h3 id="Understanding-Hyperparameters"><a href="#Understanding-Hyperparameters" class="headerlink" title="Understanding Hyperparameters"></a>Understanding Hyperparameters</h3><p>最后，我们直接比较不同的超参数的选择如何影响top-K off-policy correction对平台上的用户体验。我们在top-K off-policy correction成为生产模型后进行了这些测试。</p>
+<h4 id="Number-of-actions"><a href="#Number-of-actions" class="headerlink" title="Number of actions"></a>Number of actions</h4><p>我们先测了下top-K中的K。我们用$K \in\{1,2,16,32\}$训练了三个结构相同的模型。The control (production) model is the top-K<br>off-policy model with K = 16. 我们在图5画了5天实验的结果。当K=1时,top-K就是标准的off-policy correction。与基线K = 16相比 K = 1 导致ViewTime掉了0.66%。K = 2 也不好，不过差距变小了，ViewTime下降了0.35%，K = 32的效果类似基线。我们后续的实验显示K = 8 在ViewTime上有一定的正向(+0.15% statistically significant)</p>
+<p><img src="/images/rl_rec_f5.png" alt="f5"></p>
+<h4 id="Capping"><a href="#Capping" class="headerlink" title="Capping"></a>Capping</h4><p>这里我们来探讨下方差减小技术对学到的推荐系统的最终质量的影响。论文Section4.4里weight capping在最初实验里拿到了最大的收益。我们没有观察到normalized importance sampling,or TRPO [36]对指标的提升。我们搞了个回归测试研究weight capping的影响，比较了c = e^3和c = e^5。当我们取消对importance weight的限制时，学到的策略$π_θ$可能会过度适应一些意外获得高回报的logged actions。 Swaminathan和Joachims [43]描述了倾向过拟合的类似效果。 在线上实验中，当the cap on importance weight被增大时，我们观察到ViewTime显着下降了0.52％。</p>
+<h2 id="Conclusion-and-Future-Works"><a href="#Conclusion-and-Future-Works" class="headerlink" title="Conclusion and Future Works"></a>Conclusion and Future Works</h2><p>这篇paper讲了policy gradient-based top-K推荐系统在Youtube上的应用。我们将REINFORCE的action space扩展到数百万这个级别，并且稳定的运行在线上生产环境中。为了展示这种方法的全部收益，我们演示了如何通过结合a learned logging policy和新颖的top K-off-policy correction来解决logged data中的bias。我们进行了广泛的分析和实验，以的重要性并解决这些潜在的biases。 我们认为这些是使强化学习对推荐产生实际影响的重要步骤，并为研究人员和从业人员探索将RL应用于推荐系统提供了坚实的基础。</p>
+<ul>
+<li>Reinforement Learning Framework for Recommender Systems</li>
+<li>Future Work<ul>
+<li>Better state representation through LRD</li>
+<li>Better exploration and planning</li>
+<li>Beyond systems and user:improve Youtube ecosystem</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.youtube.com/watch?v=HEqQ2_1XRTs" target="_blank" rel="noopener">https://www.youtube.com/watch?v=HEqQ2_1XRTs</a></li>
+<li><a href="https://arxiv.org/pdf/1812.02353.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1812.02353.pdf</a></li>
+</ul>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>

@@ -236,7 +236,7 @@ classes that you can use:
 <p>按如下脚本执行，有错误就解决，补充以及常见问题方案</p>
 <ol>
 <li>下载XCode Command Line Tools for 7.3, 因为NVIDIA 暂时还不支持Xcode 8.0的. 切换到7.3的tools:<blockquote>
-<p>sudo xcode-select –switch /Library/Developer/CommandLineTools</p>
+<p>sudo xcode-select —switch /Library/Developer/CommandLineTools</p>
 </blockquote>
 </li>
 </ol>
@@ -244,11 +244,11 @@ classes that you can use:
 <blockquote>
 <p>sudo xcode-select -s /Applications/Xcode.app/Contents/Developer</p>
 </blockquote>
-<ol start="2">
+<ol>
 <li>BLAS那边你可能会遇到问题，在Makefile.config里加如下几行</li>
 </ol>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BLAS_INCLUDE := <span class="variable">$(<span class="built_in">shell</span> brew --prefix openblas)</span>/<span class="keyword">include</span></span><br><span class="line">BLAS_LIB := <span class="variable">$(<span class="built_in">shell</span> brew --prefix openblas)</span>/lib</span><br><span class="line">LIB_CUDA := -L/usr/local/cuda/lib -lcuda</span><br></pre></td></tr></table></figure>
-<ol start="3">
+<ol>
 <li><p>libcnn.so找不到，这个说起来我有，不知道为啥找不到，所以直接把<br>USE_CUDNN := 1 注掉了</p>
 </li>
 <li><p>下边脚本执行可能还会有些问题，不过大多是缺东西，直接装就行了，然后对应的版本要调整，比如脚本里边是libcaffe.so.1.0.0-rc3，而我这边实际是libcaffe.so.1.0.0等</p>

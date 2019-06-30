@@ -245,7 +245,7 @@ classes that you can use:
 <li>健壮的集群管理界面（nsqadmin）</li>
 </ul>
 <h3 id="保障"><a href="#保障" class="headerlink" title="保障"></a>保障</h3><ul>
-<li><p>消息高可用<br>系统支持 –mem-queue-size选项，即队列中超过–mem-queue-size的消息内容将会被写入disk中。–mem-queue-size可以被设置为0，即所有消息都写入disk<br>消息没有内置重复，不过有很多权衡方法，比如拓扑、以容错方式主动从属以及将消息保存在磁盘中</p>
+<li><p>消息高可用<br>系统支持 —mem-queue-size选项，即队列中超过—mem-queue-size的消息内容将会被写入disk中。—mem-queue-size可以被设置为0，即所有消息都写入disk<br>消息没有内置重复，不过有很多权衡方法，比如拓扑、以容错方式主动从属以及将消息保存在磁盘中</p>
 </li>
 <li><p>消息可以多次传递<br>在nsqd节点不挂的情况下，当客户端timeouts, disconnections, requeues时，消息可以被系统再次传递</p>
 </li>
@@ -269,9 +269,9 @@ classes that you can use:
 </ol>
 <p>这确保了只有当nsqd进程被不正常关闭时，才会引发消息丢失这一唯一的边缘情况。<br>预防消息丢失是极其重要的事情，甚至在边界情况下我们也要保证消息不丢。一个解决方案是容忍消息冗余，在不同的host上存储同样的消息备份。因为consumer应该是幂等的，所以一份消息消费两次并没有什么影响（除了性能），这保证你的系统中一个节点故障后仍然不会丢失消息。</p>
 <p>另外，NSQ提供了一些模块来支持各种生产用例和可配置的持久性。</p>
-<h3 id="内存占用控制"><a href="#内存占用控制" class="headerlink" title="内存占用控制"></a>内存占用控制</h3><p>nsqd提供了一个可配置的选项–mem-queue-size，它决定了给定queue可以在内存中存储的消息数。如果消息数超过之前设定的阈值，消息就会被写入disk中，通过–mem-queue-size参数的设置限制了nsqd进程的内存占用</p>
+<h3 id="内存占用控制"><a href="#内存占用控制" class="headerlink" title="内存占用控制"></a>内存占用控制</h3><p>nsqd提供了一个可配置的选项—mem-queue-size，它决定了给定queue可以在内存中存储的消息数。如果消息数超过之前设定的阈值，消息就会被写入disk中，通过—mem-queue-size参数的设置限制了nsqd进程的内存占用</p>
 <p><img src="http://media.tumblr.com/tumblr_mavte17V3t1qj3yp2.png" alt="此处输入图片的描述"></p>
-<p>聪明的观察者可以发现通过将–mem-queue-size设置为1甚至是0，可以非常方便的去保证消息传递的可靠。disk-backed queue保证了系统有效规避异常重启</p>
+<p>聪明的观察者可以发现通过将—mem-queue-size设置为1甚至是0，可以非常方便的去保证消息传递的可靠。disk-backed queue保证了系统有效规避异常重启</p>
 <p>同样，如果想关机的话，可以通过信号，让nsqd将内存里和正在传递的信息存储在硬盘中。</p>
 <p>注意，其名称以字符串#ephemeral结尾的topic/channel不会缓存到磁盘，而是会在传递mem队列大小后丢弃消息。 </p>
 <h3 id="高效"><a href="#高效" class="headerlink" title="高效"></a>高效</h3><p>NSQ被设计为通过“memcached-like”有大小前缀的命令协议进行通信。 所有消息数据保存在core中，包括诸如尝试次数，时间戳等元数据。这避免了在服务器到客户端之间来回复制数据，这是先前工具链在重新排队消息时的固有属性。 这也简化了客户端，他们不再需要维护消息状态。</p>

@@ -16,18 +16,18 @@
     
     
 
-    <meta name="description" content="###一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-">
+    <meta name="description" content="一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-rel">
 <meta name="keywords" content="node,socket.io">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.js | 王鸣辉的博客">
 <meta property="og:url" content="http://yoursite.com/2016/02/23/Node-js/index.html">
 <meta property="og:site_name" content="王鸣辉的博客">
-<meta property="og:description" content="###一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-">
+<meta property="og:description" content="一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-rel">
 <meta property="og:locale" content="default">
 <meta property="og:updated_time" content="2019-05-26T16:52:16.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js | 王鸣辉的博客">
-<meta name="twitter:description" content="###一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-">
+<meta name="twitter:description" content="一、安装1.图形界面的话直接官网下载安装包2.命令行的话添加epel源64位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm32位: rpm -ivh http://download.fedoraproject.org/pub/epel/6/i386/epel-rel">
 
     
     
@@ -222,17 +222,16 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <p>###一、安装<br>1.图形界面的话直接官网下载安装包<br>2.命令行的话<br>添加epel源<br>64位:</p>
+    <h3 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h3><p>1.图形界面的话直接官网下载安装包<br>2.命令行的话<br>添加epel源<br>64位:</p>
 <p>rpm -ivh <a href="http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm" target="_blank" rel="noopener">http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</a><br>32位:</p>
 <p>rpm -ivh <a href="http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm" target="_blank" rel="noopener">http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm</a></p>
 <p>导入 key:</p>
-<p>rpm –import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6</p>
-<p>##添加 remi 源</p>
-<p>rpm -ivh <a href="http://rpms.famillecollet.com/enterprise/remi-release-6.rpm" target="_blank" rel="noopener">http://rpms.famillecollet.com/enterprise/remi-release-6.rpm</a><br>rpm –import /etc/pki/rpm-gpg/RPM-GPG-KEY-remi</p>
-<p>centos6：<br>yum -y install nodejs npm –enablerepo=epel</p>
+<p>rpm —import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6</p>
+<h2 id="添加-remi-源"><a href="#添加-remi-源" class="headerlink" title="添加 remi 源"></a>添加 remi 源</h2><p>rpm -ivh <a href="http://rpms.famillecollet.com/enterprise/remi-release-6.rpm" target="_blank" rel="noopener">http://rpms.famillecollet.com/enterprise/remi-release-6.rpm</a><br>rpm —import /etc/pki/rpm-gpg/RPM-GPG-KEY-remi</p>
+<p>centos6：<br>yum -y install nodejs npm —enablerepo=epel</p>
 <p>解决国内npm不下来包：更改源<br>npm config set registry <a href="http://registry.cnpmjs.org" target="_blank" rel="noopener">http://registry.cnpmjs.org</a></p>
-<p>##express<br>npm install –save express</p>
-<p>#socket.io<br>npm install –save socket.io</p>
+<h2 id="express"><a href="#express" class="headerlink" title="express"></a>express</h2><p>npm install —save express</p>
+<h1 id="socket-io"><a href="#socket-io" class="headerlink" title="socket.io"></a>socket.io</h1><p>npm install —save socket.io</p>
 
   </section>
 
