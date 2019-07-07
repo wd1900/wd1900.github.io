@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Deep Learning Recommendation Model for Personalization and Recommendation Systems | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="分享一下facebook新发的深度学习推荐系统的论文Deep Learning Recommendation Model for Personalization and Recommendation Systems，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构DLRM，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理">
+<meta name="keywords" content="Recommendation,Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning Recommendation Model for Personalization and Recommendation Systems | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/07/06/Deep-Learning-Recommendation-Model-for-Personalization-and-Recommendation-Systems/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="分享一下facebook新发的深度学习推荐系统的论文Deep Learning Recommendation Model for Personalization and Recommendation Systems，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构DLRM，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_1.png">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_1.png">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_a1.png">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_3.png">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_5.png">
+<meta property="og:image" content="http://yoursite.com/images/dlrm_6.png">
+<meta property="og:updated_time" content="2019-07-07T14:44:29.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Deep Learning Recommendation Model for Personalization and Recommendation Systems | 王鸣辉的博客">
+<meta name="twitter:description" content="分享一下facebook新发的深度学习推荐系统的论文Deep Learning Recommendation Model for Personalization and Recommendation Systems，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构DLRM，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理">
+<meta name="twitter:image" content="http://yoursite.com/images/dlrm_1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Deep Learning Recommendation Model for Personalization and Recommendation Systems</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-07-06" class="post-meta__date date">2019-07-06</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Deep-Learning/">Deep Learning</a>, <a class="tags-link" href="/tags/Recommendation/">Recommendation</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p><strong>分享一下facebook新发的深度学习推荐系统的论文<a href="https://arxiv.org/pdf/1906.00091.pdf" target="_blank" rel="noopener">Deep Learning Recommendation Model for Personalization and Recommendation Systems</a>，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构<code>DLRM</code>，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理，内在思维逻辑如何。在大规模的现实场景中会面临哪些问题，如大规模稀疏特征如何解决，比如用数据并行与模型并行相结合。以及CPU和GPU在实践中的性能如何，等等。有在真实线上应用的同学应该都有过各自的思考，其实我觉得这里边的思路相关同学都是了解的，许多东西在实践中其实更偏向于工程问题</strong></p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>目前个性化推荐有两个主要的方向，现在基本都投奔了深度学习的怀抱中。</p>
+<h3 id="the-view-of-recommendation-systems"><a href="#the-view-of-recommendation-systems" class="headerlink" title="the view of recommendation systems"></a>the view of recommendation systems</h3><p>早期系统雇佣专家们来对产品进行分类，用户选择他们喜好的类别并基于他们的偏好进行匹配。此领域后来演变成了协同过滤，推荐基于用户过去的行为，比如对产品的打分。Neighborhood methods将用户和产品分组并用矩阵分解来描述用户和产品的latent factors，获得了成功。</p>
+<h3 id="the-view-of-predictive-analytics"><a href="#the-view-of-predictive-analytics" class="headerlink" title="the view of predictive analytics"></a>the view of predictive analytics</h3><p>用统计学模型去分类或预测给定数据的事件概率。预测模型从原来的用简单的linear and logistic regression建模转向了用deep networks。为了处理类别特征，一般采用embeddings，将one-hot或multi-hot vectors转换到抽象空间的dense respresentations。这里的抽象空间其实也就是推荐系统中的latent factors空间。</p>
+<p>本文结合了上边的两种角度，模型使用embeddings处理稀疏特征，MLP处理稠密特征，然后用统计技术进行显示的特征交叉。最后用另一个MLP来处理交差后的特征，得到事件的概率。我们将这个模型称为RLRM，见图1。<a href="https://github.com/facebookresearch/dlrm" target="_blank" rel="noopener">Pytorch&amp;Caffe2开源实现地址</a></p>
+<p><img src="/images/dlrm_1.png" alt="A deep learning recommendation model"></p>
+<h1 id="模型设计-amp-结构"><a href="#模型设计-amp-结构" class="headerlink" title="模型设计&amp;结构"></a>模型设计&amp;结构</h1><h2 id="Components-of-DLRM"><a href="#Components-of-DLRM" class="headerlink" title="Components of DLRM"></a>Components of DLRM</h2><h3 id="Embeddings"><a href="#Embeddings" class="headerlink" title="Embeddings"></a>Embeddings</h3><p>处理类别特征时，一般使用embedding，实现的时候其实是搞了个lookup table，然后去查对应类别的embedding，所以one-hot vector $e_i$就相当于是embedding lookup（对位i是1，其他为0）,embedding table $W \in \mathbb{R}^{m \times d}$</p>
+<script type="math/tex; mode=display">\boldsymbol{w}_{i}^{T}=\boldsymbol{e}_{i}^{T} W</script><p>embedding也可以被理解为是多个items的带权组合，mulit-hot vector $\boldsymbol{a}^{T}=\left[0, \ldots, a_{i_{1}}, \ldots, a_{i_{k}}, \ldots, 0\right]$ ， $a_{i} \neq 0$,  index $i_k$ 对应items.一个大小为t的mini-batch embedding lookups可以写为：</p>
+<script type="math/tex; mode=display">S=A^{T} W</script><p>DLRMs利用embedding tables将类别特征映射到稠密表示。但即使embeddings是有意义的，但我们要如何利用它们进行准确的预测呢？ latent factor methods。</p>
+<h3 id="Matrix-Factorization"><a href="#Matrix-Factorization" class="headerlink" title="Matrix Factorization"></a>Matrix Factorization</h3><p>回顾推荐问题的典型场景，有一组用户S已经给一些产品进行了评价。我们将产品表示为vector $w_i$，将用户表示为vector $v_j$，共n个产品，m个用户。$(i,j) S$</p>
+<p>The matrix factorization approach solves this problem by minimizing</p>
+<script type="math/tex; mode=display">\min \sum_{(i, j) \in \mathcal{S}} r_{i j}-\boldsymbol{w}_{i}^{T} \boldsymbol{v}_{j} (3)</script><p>$R \approx W V^{T}$,R其实就是Reward matrix，W，V是两个embedding tables，每一行分别表示着laten factor space里的user/product.<br>vectors的点积代表对rating的预测。</p>
+<h3 id="Factoriation-Machine"><a href="#Factoriation-Machine" class="headerlink" title="Factoriation Machine"></a>Factoriation Machine</h3><p>在分类问题中，我们会顶一个预测函数：$\phi : \mathbb{R}^{n} \rightarrow T$ 输入x预测 label y. 我们定义T={+1, -1},+1代表有点击，-1代表每点击，去预测click-through rate。 FM在线性模型上引入了二阶交叉。</p>
+<script type="math/tex; mode=display">\hat{y}=b+\boldsymbol{w}^{T} \boldsymbol{x}+\boldsymbol{x}^{T} \text { upper }\left(V V^{T}\right) \boldsymbol{x} (4)</script><p>$V \in \mathbb{R}^{n \times d}, \boldsymbol{w} \in \mathbb{R}^{n}, \text { and } b \in \mathbb{R}$</p>
+<p>FM明显不同于多项式核函数SVM的是，它将分解二阶交叉矩阵到latent factors(or embedding vectors)就像矩阵分解似的，更高效的处理了稀疏数据。通过仅用不同embedding vectors交叉显著减少了二阶交叉的复杂度。转为了线性计算复杂度。</p>
+<h3 id="Multilayer-Perceptrons"><a href="#Multilayer-Perceptrons" class="headerlink" title="Multilayer Perceptrons"></a>Multilayer Perceptrons</h3><p>当然，当前许多在机器学习上的成功是源于深度学习的兴起。这里边最基础的模型就是MLP了，一个由FC layers和激活函数组成的预测函数。</p>
+<script type="math/tex; mode=display">\hat{y}=W_{k} \sigma\left(W_{k-1} \sigma\left(\ldots \sigma\left(W_{1} \boldsymbol{x}+\boldsymbol{b}_{1}\right) \dots\right)+\boldsymbol{b}_{k-1}\right)+\boldsymbol{b}_{k} (5)</script><p>$\text { weight matrix } W_{l} \in \mathbb{R}^{n_{l} \times n_{l-1}}, \text { bias } \boldsymbol{b}_{l} \in \mathbb{R}^{n_{l}} \text { for layer } l=1, \ldots, k$</p>
+<p>这些方法备用来捕获更复杂的interactions。比如在有足够的参数下，MLPs有足够的深度和广度来适应数据到任意精度。各种方法的变种被广泛应用到了各种场景下，包括cv和nlp。有一个特别的case，<strong>NCF</strong>被用来做MLPerf benchmark的一部分，它使用MLP来计算矩阵分解中embeddings直接的interaction，而非dot product。</p>
+<h2 id="DLRM-Architecture"><a href="#DLRM-Architecture" class="headerlink" title="DLRM Architecture"></a>DLRM Architecture</h2><p>上边描述了推荐系统和预测分析使用的不同模型，现在我们将其组合起来，构建一个state-of-the-art 的个性化模型。<br>users和products可以用许多的连续特征和类别特征来描述.<br>类别特征，用同一尺寸的embedding vector表示<br>连续特征用MLP(bottom or dense MLP)转换为同样长度的稠密向量。</p>
+<p>我们按照FM的方式处理稀疏特征，显示地计算不同特征的二阶交叉，可选的将其传给MLPs。将这些dot products与原始的dense features拼接起来，传给另一个MLP(the top or output MLP)，最后套个sigmoid函数输出概率。</p>
+<h2 id="Comparison-with-Prior-Models"><a href="#Comparison-with-Prior-Models" class="headerlink" title="Comparison with Prior Models"></a>Comparison with Prior Models</h2><p>许多基于深度学习的推荐模型使用类似的想法去处理稀疏特征，生成高阶项。<br><strong>Wide and Deep</strong>, <strong>Deep and Cross</strong>, <strong>DeepFm</strong>, <strong>xDeepFM</strong> 都设计了特别的网络去系统性地构建higher-order interactions。这些网络将他们特别的结构和MLP相加，然后传到一个linear layer使用sigmoid函数去输出一个最终概率。<strong>DLRM</strong>模仿因子分解机,以结构化的方式interacts embeddings，通过仅在最终MLP中对embeddings进行dot product产生交叉项来显着降低模型的维数。 <strong>我们认为其他网络中发现的二阶以上的高阶交互可能不值得额外的计算/内存消耗。</strong></p>
+<p>DLRM与其他网络之间的关键区别在于这些网络如何处理embedded feature vectors 及其交叉项。 特别是，DLRM（和xDeepFM）将每个特征向量解释为表示单个类别的单个unit，而像<strong>Deep and Cross</strong>这样的网络将特征向量中的每个元素视为一个新的unit来产生不同交叉项。 因此，<strong>Deep and Cross</strong>不仅会像DLRM中通过点积产生来自不同特征向量的元素之间的交叉项，还会在相同特征向量内的元素之间产生交叉项，从而产生更高的维度。</p>
+<h1 id="Parallelism"><a href="#Parallelism" class="headerlink" title="Parallelism"></a>Parallelism</h1><p>现在的个性化推荐系统需要大且复杂的模型去充分利用巨大的数据。<code>DLRMs</code>尤其包含了非常多的参数，比其他常见的深度学习模型如CNN，RNN,GAN还要大几个数量级。<br>这导致训练过程可能要到几周甚至更多。为此，要想在实际场景中解决这些问题，就必须有效的并行化这些模型。</p>
+<p>如上描述，<code>DLRMs</code> 用耦合的方式处理离散特征和连续特征。其中Embeddings贡献了主要的参数，每个表都要需要很多GB的内存，所以DLRM是内存容量和带宽密集型。embeddings的规模让数据并行变得不可行，因为他需要在每个设备上都复制embeddings。在很多场景下，内存的约束强制让模型的分布必须跨多个设备来满足内存容量的需求。</p>
+<p>另一方面，MLP的参数占用内存比较小，但是在计算量上占大头。因此,数据并行适合 MLPs,支持对不同设备上的样本进行并发处理,并且仅在累积更新时需要通信。并行<code>RLRM</code>对embeddings用模型并行，对MLP用数据并行，在缓解embeddings的内存瓶颈的同时让MLPs进行前向和反向传播。模型&amp;数据并行的结合是DLRM这样结构和大模型尺寸的一个特别需要。这样组合的并行<code>Caffe2</code>和<code>Pytorch</code>都不支持，其他流行的深度学习框架也如此，因此我们需要设计一个定制的应用。会在未来的工作中提供详细的性能研究。</p>
+<p>在我们的设置里，top MLP和interaction op需要能连接到bottom MLP和所有embeddings。因为模型并行已经将embeddings分散到各个device上，这就需要个性化的all-to-all的通信。在embedding lookup最后这块，每个设备都驻留着一个embedding tables的向量，用于mini-batch中的所有样本，需要沿着min-batch的维度进行拆分并于对应设备通信，如图2所示。</p>
+<p><img src="/images/dlrm_1.png" alt="Butterfly shuffle for the all-to-all (personalized) communication"></p>
+<p><code>Pytorch</code>和<code>Caffe2</code>都没有提供原生的模型并行，因此我们通过显示的去不同设备上mapping the embedding op来实现。然后使用butterfly shuffle operator实现个性化的全对所有通信，适当地对所得到的embedding vectors进行切片并将它们传送到目标设备。 在当前版本中，这些传输是显式复制，但我们打算使用可用的通信原语（例如all-gather和send-recv）进一步优化它。我们注意到，对于数据并行的MLP，反向传播中的参数更新是用allreduce一起累积的，并以同步方式将参数复制到每个设备上，确保每次迭代前每个设备上的更新参数一致。 在PyTorch中，数据并行性通过nn.DistributedDataParallel和nn.DataParallel模块在每个设备上复制模型并插入allreduce与必要性依赖。 在Caffe2中，我们在梯度更新之前手动插入allreduce。</p>
+<h1 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h1><p>搞了三个数据集，随机集、人造集和公开数据集.前两个可用于从系统角度试验模型,它允许我们通过动态生成数据，消除对数据存储系统的依赖性来测试不同的硬件属性和瓶颈。 后者让我们对实际数据进行实验并测量模型的准确性。</p>
+<h3 id="Random"><a href="#Random" class="headerlink" title="Random"></a>Random</h3><p>连续特征用numpy根据均匀分布或者高斯分布来生成。</p>
+<p>离散特征我们直接生成embedding matrix以及对应的index</p>
+<h3 id="Synthetic"><a href="#Synthetic" class="headerlink" title="Synthetic"></a>Synthetic</h3><p><img src="/images/dlrm_a1.png" alt="Butterfly shuffle for the all-to-all (personalized) communication"></p>
+<p><img src="/images/dlrm_3.png" alt="Probability distribution p based on a sample trace tr = random.uniform(1,100,100K)"></p>
+<h3 id="Public"><a href="#Public" class="headerlink" title="Public"></a>Public</h3><p>个性化推荐系统的公开数据比较少，The Criteo AI Labs Ad Kaggle和Terabyte数据集为了做点击率预估包含了点击日志。每个数据有13个连续特征，26个离散特征。连续特征用log(1+x)处理。离散特征映射到对应embedding的index, 无标注的离散特征被映射到0或NULL.</p>
+<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><p><a href="https://github.com/facebookresearch/dlrm" target="_blank" rel="noopener">DLRM实现地址（Pytorch and Caffe2）</a></p>
+<blockquote>
+<p>The experiments are performed on<br>the Big Basin platform with Dual Socket Intel Xeon 6138 CPU<br>@ 2.00GHz and eight Nvidia Tesla V100 16GB GPUs</p>
+</blockquote>
+<h2 id="Model-Accuracy-on-Public-Data-Sets"><a href="#Model-Accuracy-on-Public-Data-Sets" class="headerlink" title="Model Accuracy on Public Data Sets"></a>Model Accuracy on Public Data Sets</h2><p>我们在Criteo Ad Kaggle 数据集上和<code>Deep and Cross(DCN)</code>比较模型的准确率和性能,因为这个模型在同样数据集上有比较综合的结果。值得注意的是，模型的大小可以根据数据集中的特征数去调整。 特别地，DLRM包括用于处理稠密特征的bottom MLP，其包括512,256和64个节点的三个隐层，以及由512和256个节点的两个隐层组成的top MLP。 而DCN由六个cross layer和一个512和256个节点的深度网络组成，embedding dimension是16，所以DLRM和DCN都大概有540M的参数。</p>
+<p>我们画出了训练集和验证集在单epoch的准确率，每个模型都使用了SGD和Adagrad优化器，没有使用正则化。实验中DLRM在训练集和验证集的准确率都略高一些，如图5.值得注意的是，这里边没有进行额外的调参。</p>
+<p><img src="/images/dlrm_5.png" alt="Comparison of training (solid) and validation (dashed) accuracies of DLRM and DCN"></p>
+<h2 id="Model-Performance-on-a-Single-Socket-Device"><a href="#Model-Performance-on-a-Single-Socket-Device" class="headerlink" title="Model Performance on a Single Socket/Device"></a>Model Performance on a Single Socket/Device</h2><p>这里使用8个离散特征+512个连续特征的模型去测我们模型在单socket device上的性能。每个离散特征被处理为有1M vectors的embedding table，vector dimension是64，这些连续特征等价一个有512维的vector。让bottom MLP有两层，top MLP有四层。我们在一个2048K的随机生成样本数据集即1K个mini-batches上评估模型。</p>
+<p><img src="/images/dlrm_6.png" alt="Profiling of a sample DLRM on a single socket/device"></p>
+<p>这个模型用Caffe2实现，在CPU上要跑256s，GPU上跑62s，具体见图6.如所预期，主要的时间花费在embedding lookups和全连接层。在CPU上全连接层的计算消耗显著，而GPU上几乎可以忽略。</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>在本文中,我们提出并开源了一种新的基于深度学习的推荐模型,利用分类数据。尽管推荐和个性化系统仍然在当今工业届中推动深度学习的实用成功,但这些网络在学术界仍然很少受到关注。通过详细描述先进的推荐系统并开源其实现,我们希望人们能关注到这类特别的网络,以便进一步进行算法实验、建模、系统协同设计和基准测试。</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>
