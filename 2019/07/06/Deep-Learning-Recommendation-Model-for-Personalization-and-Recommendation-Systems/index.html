@@ -17,7 +17,7 @@
     
 
     <meta name="description" content="分享一下facebook新发的深度学习推荐系统的论文Deep Learning Recommendation Model for Personalization and Recommendation Systems，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构DLRM，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理">
-<meta name="keywords" content="Deep Learning,Recommendation">
+<meta name="keywords" content="Recommendation,Deep Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep Learning Recommendation Model for Personalization and Recommendation Systems | 王鸣辉的博客">
 <meta property="og:url" content="http://yoursite.com/2019/07/06/Deep-Learning-Recommendation-Model-for-Personalization-and-Recommendation-Systems/index.html">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://yoursite.com/images/dlrm_3.png">
 <meta property="og:image" content="http://yoursite.com/images/dlrm_5.png">
 <meta property="og:image" content="http://yoursite.com/images/dlrm_6.png">
-<meta property="og:updated_time" content="2019-07-07T14:58:31.570Z">
+<meta property="og:updated_time" content="2019-07-08T13:56:25.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Learning Recommendation Model for Personalization and Recommendation Systems | 王鸣辉的博客">
 <meta name="twitter:description" content="分享一下facebook新发的深度学习推荐系统的论文Deep Learning Recommendation Model for Personalization and Recommendation Systems，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构DLRM，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理">
@@ -229,7 +229,7 @@ classes that you can use:
   </header>
 
   <section id="post-content" class="article-content post">
-    <p><strong>分享一下facebook新发的深度学习推荐系统的论文<a href="https://arxiv.org/pdf/1906.00091.pdf" target="_blank" rel="noopener">Deep Learning Recommendation Model for Personalization and Recommendation Systems</a>，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构<code>DLRM</code>，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理，内在思维逻辑如何。在大规模的现实场景中会面临哪些问题，如大规模稀疏特征如何解决，比如用数据并行与模型并行相结合。以及CPU和GPU在实践中的性能如何，等等。有在真实线上应用的同学应该都有过各自的思考，其实我觉得这里边的思路相关同学都是了解的，许多东西在实践中其实更偏向于工程问题</strong></p>
+    <p><strong>分享一下facebook新发的深度学习推荐系统的论文<a href="https://arxiv.org/pdf/1906.00091.pdf" target="_blank" rel="noopener">Deep Learning Recommendation Model for Personalization and Recommendation Systems</a>，这篇文章概述了当前推荐系统实现的主要思路，提出了一种通用的模型结构<code>DLRM</code>，与其他常见的paper不同，该篇有着浓浓的工业界风格，不仅和其他模型进行效果对比，还讲述了常见的特征如何处理，内在思维逻辑如何。在大规模的现实场景中会面临哪些问题，如大规模稀疏特征如何解决，比如用数据并行与模型并行相结合。以及CPU和GPU在实践中的性能如何，等等。有在真实线上应用的同学应该都有过各自的思考，其实我觉得这里边的思路相关同学都是了解的，许多东西在实践中其实更偏向于工程问题。现今的开源框架都无法支持大规模推荐系统，所以各家其实都有自己自研的框架。</strong></p>
 <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>目前个性化推荐有两个主要的方向，现在基本都投奔了深度学习的怀抱中。</p>
 <h3 id="the-view-of-recommendation-systems"><a href="#the-view-of-recommendation-systems" class="headerlink" title="the view of recommendation systems"></a>the view of recommendation systems</h3><p>早期系统雇佣专家们来对产品进行分类，用户选择他们喜好的类别并基于他们的偏好进行匹配。此领域后来演变成了协同过滤，推荐基于用户过去的行为，比如对产品的打分。Neighborhood methods将用户和产品分组并用矩阵分解来描述用户和产品的latent factors，获得了成功。</p>
 <h3 id="the-view-of-predictive-analytics"><a href="#the-view-of-predictive-analytics" class="headerlink" title="the view of predictive analytics"></a>the view of predictive analytics</h3><p>用统计学模型去分类或预测给定数据的事件概率。预测模型从原来的用简单的linear and logistic regression建模转向了用deep networks。为了处理类别特征，一般采用embeddings，将one-hot或multi-hot vectors转换到抽象空间的dense respresentations。这里的抽象空间其实也就是推荐系统中的latent factors空间。</p>
@@ -260,7 +260,11 @@ classes that you can use:
 <h1 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h1><p>搞了三个数据集，随机集、人造集和公开数据集.前两个可用于从系统角度试验模型,它允许我们通过动态生成数据，消除对数据存储系统的依赖性来测试不同的硬件属性和瓶颈。 后者让我们对实际数据进行实验并测量模型的准确性。</p>
 <h3 id="Random"><a href="#Random" class="headerlink" title="Random"></a>Random</h3><p>连续特征用numpy根据均匀分布或者高斯分布来生成。</p>
 <p>离散特征我们直接生成embedding matrix以及对应的index</p>
-<h3 id="Synthetic"><a href="#Synthetic" class="headerlink" title="Synthetic"></a>Synthetic</h3><p><img src="/images/dlrm_a1.png" alt="Butterfly shuffle for the all-to-all (personalized) communication"></p>
+<h3 id="Synthetic"><a href="#Synthetic" class="headerlink" title="Synthetic"></a>Synthetic</h3><p>有很多理由让我们定制化的生成类别特征的indices，比如我们用了个特别的数据集，并因为隐私问题不想共享它。那么我们可以通过分布来表达类别特征。这可能有助于替代应用中使用的隐私保护技术，比如federated learning。同样，如果我们想要研究内存行为，我们synthetic trace中原始trace的基本访问位置。</p>
+<p>假设我们有所有特征的embedding lookups indices的trace。我们可以记录轨迹中的去重后的访问和重复访问的距离频率（算法.1）,生成[14]提的synthetic trace（算法2）。</p>
+<p><img src="/images/dlrm_a1.png" alt="Butterfly shuffle for the all-to-all (personalized) communication"></p>
+<p>请注意，我们只能生成到目前为止看到的s次唯一访问，因此s是控制算法2中分布p的支撑集。 给定固定数量的唯一访问，input trace越长将导致在算法1中分配给它们的概率越低，这将导致算法2要更长的时间取得完整分布支撑集。 为了解决这个问题，我们将唯一访问的概率提高到最小阈值，并调整支撑集以便在看到所有访问后从中删除唯一访问。基于original and synthetic traces的概率分布p的可视化比较如图3所示。在我们的实验中，original and adjusted synthetic traces产生了类似的缓存命中/未命中率。</p>
+<p>算法1和算法2设计过去用于更精确的缓存模拟，但是它们表明一般概念，那就是概率分布可以怎样用来生成具有期望属性的synthetic traces。</p>
 <p><img src="/images/dlrm_3.png" alt="Probability distribution p based on a sample trace tr = random.uniform(1,100,100K)"></p>
 <h3 id="Public"><a href="#Public" class="headerlink" title="Public"></a>Public</h3><p>个性化推荐系统的公开数据比较少，The Criteo AI Labs Ad Kaggle和Terabyte数据集为了做点击率预估包含了点击日志。每个数据有13个连续特征，26个离散特征。连续特征用log(1+x)处理。离散特征映射到对应embedding的index, 无标注的离散特征被映射到0或NULL.</p>
 <h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><p><a href="https://github.com/facebookresearch/dlrm" target="_blank" rel="noopener">DLRM实现地址（Pytorch and Caffe2）</a></p>
@@ -273,7 +277,7 @@ classes that you can use:
 <h2 id="Model-Performance-on-a-Single-Socket-Device"><a href="#Model-Performance-on-a-Single-Socket-Device" class="headerlink" title="Model Performance on a Single Socket/Device"></a>Model Performance on a Single Socket/Device</h2><p>这里使用8个离散特征+512个连续特征的模型去测我们模型在单socket device上的性能。每个离散特征被处理为有1M vectors的embedding table，vector dimension是64，这些连续特征等价一个有512维的vector。让bottom MLP有两层，top MLP有四层。我们在一个2048K的随机生成样本数据集即1K个mini-batches上评估模型。</p>
 <p><img src="/images/dlrm_6.png" alt="Profiling of a sample DLRM on a single socket/device"></p>
 <p>这个模型用Caffe2实现，在CPU上要跑256s，GPU上跑62s，具体见图6.如所预期，主要的时间花费在embedding lookups和全连接层。在CPU上全连接层的计算消耗显著，而GPU上几乎可以忽略。</p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>在本文中,我们提出并开源了一种新的基于深度学习的推荐模型,利用分类数据。尽管推荐和个性化系统仍然在当今工业届中推动深度学习的实用成功,但这些网络在学术界仍然很少受到关注。通过详细描述先进的推荐系统并开源其实现,我们希望人们能关注到这类特别的网络,以便进一步进行算法实验、建模、系统协同设计和基准测试。</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>在本文中,我们提出并开源了一种新的基于深度学习的推荐模型,利用分类数据。尽管推荐和个性化系统已在当今工业界中通过深度学习获得了实用的成功,但这些网络在学术界仍然很少受到关注。通过详细描述先进的推荐系统并开源其实现,我们希望人们能关注到这类特别的网络,以便进一步进行算法实验、建模、系统协同设计和基准测试。</p>
 
   </section>
 
