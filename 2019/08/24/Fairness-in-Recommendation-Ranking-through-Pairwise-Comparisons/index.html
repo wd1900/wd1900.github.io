@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Fairness in Recommendation Ranking through Pairwise Comparisons 分享 | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。">
+<meta name="keywords" content="Google,Recommendation,Fairness,Pairwise">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fairness in Recommendation Ranking through Pairwise Comparisons 分享 | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/08/24/Fairness-in-Recommendation-Ranking-through-Pairwise-Comparisons/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/FIRP_1.png">
+<meta property="og:image" content="http://yoursite.com/images/FIRP_table1.png">
+<meta property="og:image" content="http://yoursite.com/images/FIRP_formula1.png">
+<meta property="og:image" content="http://yoursite.com/images/FIRP_2.png">
+<meta property="og:image" content="http://yoursite.com/images/FIRP_34.png">
+<meta property="og:updated_time" content="2019-09-07T13:38:29.017Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fairness in Recommendation Ranking through Pairwise Comparisons 分享 | 王鸣辉的博客">
+<meta name="twitter:description" content="今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。">
+<meta name="twitter:image" content="http://yoursite.com/images/FIRP_1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Fairness in Recommendation Ranking through Pairwise Comparisons 分享</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-08-24" class="post-meta__date date">2019-08-24</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Fairness/">Fairness</a>, <a class="tags-link" href="/tags/Google/">Google</a>, <a class="tags-link" href="/tags/Pairwise/">Pairwise</a>, <a class="tags-link" href="/tags/Recommendation/">Recommendation</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。</p>
+<a id="more"></a>
+<p>今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。<br>推荐系统现在可以说是无处不在，那么有时候我们就需要考虑公平性的问题。<br>1.什么是公平性？<br>2.如何量化它？<br>3.如何解决它？<br>文章提供了一些指标来评价推荐系统算法的公平性，并展示了如何基于随机化实验的pairwise comparisons来衡量公平性。根据相应指标，提出了一个新的正则化方法，来促使模型在训练中改进相应指标，从而提高排序的公平性。将这种pairwise正则化应用于一个大规模的生产环境推荐系统后，能够显著提高系统的pairwise fairness，同时保证相应的点击与互动指标不掉。</p>
+<p>总的来说，虽然提升公平性的过程中，点击和互动指标是中性的。也是说从用户侧实验角度来说其实是没有提升的，实际工作中遇到这种情况其实是无法推上线的。不过我觉得有打算在线上尝试的同学可以考虑开开作者侧实验，文章中的结论显示对于原先学习不充分的group，在应用pairwise正则化后，可以提高其点击率，也就会增加其曝光机会，在不影响大盘指标的情况下，我觉得这个对于作者的发文尤其是小众的，应该是正向的。</p>
+<p>依旧收简历，欢迎各位同学来抖音火山推荐团队，邮箱 wangmhwd@gmail.com</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>本文聚焦于推荐系统中under-ranking groups of items的风险。例如，如果社交网络对某个人口统计群体的帖子排名不高，那就可能会限制该群组在服务中的可见性。</p>
+<p>现在研究人员已经提出了很多关于公平性的指标，研究推荐系统中公平性的一个挑战就是指标很复杂。它们通常由多个模型组成，必须平衡多个目标，并且由于极端和倾斜的稀疏性而难以评估。所有这些问题在推荐系统社区中很难解决，并且在改进推荐公平性上存在着额外的挑战。</p>
+<p>另一个挑战是将推荐系统当做pointwise预测问题，然后应用到排序列表中。实际排序构建与pointwise是有个gap的。公平性问题也有类似的困境。现在的研究的公平性指标多围绕与pointwise准确性，但这并不意味着用户最终看到的排序就好。</p>
+<p><img src="/images/FIRP_1.png" alt="We find significant differences in inter-group pairwise accuracy, but using pairwise regularization we significantly close that gap"></p>
+<p>另外，因为系统一直在动态变化，所以推荐系统的评估是及其困难的。用户昨天感兴趣的，明天就可能不感兴趣了,我们只有在向他们推荐item时才知道他们是否真的感兴趣。这就导致通过之前推荐系统得到的指标是有偏的，有大量的研究工作是去做一个无偏的离线评估，但因为巨大的item space、反馈的稀疏性以及不断变化的user和item，使其变得很困难。</p>
+<p>本文通过一个<code>pairwise recommendation fairness metric</code>来解决这些挑战。用容易的随机实验去获取用户偏好的无偏估计。基于这些pairwise preference，我们也能测量一个pointwise推荐系统的公平性，并表明这些指标与排序效果直接相关。此外，我们提供了一种新颖的正规化项，可以提高pointwise推荐的最终排序的公平性，如图1所示。我们在生产环境的大规模推荐系统上进行测试，并显示出实际的收益，并进行理论&amp;经验上的权衡。</p>
+<p>总的来说，文章有以下贡献：</p>
+<ul>
+<li><strong>Pairwise Fairness:</strong> 基于pairwise提出一系列新颖的评估推荐公平性的指标，并表明pairwise fairness metric与排序效果直接相关并分析与poinwise fairness metrics的关系。</li>
+<li><strong>Pairwise Regularization:</strong> 提出一个正则化方法在给定的指标上提高模型性能，同时对pointwise模型也有效。</li>
+<li><strong>Real-world Experiments:</strong> 在大规模生产环境的推荐系统上实验，论证其在pairwise fairness上有显著提升。</li>
+</ul>
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><ul>
+<li>Recommender Systems.</li>
+<li>Machine Learning Fairness.</li>
+<li>Recommender System Fairness</li>
+<li>Fairness Optimization.</li>
+</ul>
+<h2 id="Pairwise-Fairness-for-Recommendation"><a href="#Pairwise-Fairness-for-Recommendation" class="headerlink" title="Pairwise Fairness for Recommendation"></a>Pairwise Fairness for Recommendation</h2><h3 id="Recommendation-Environment"><a href="#Recommendation-Environment" class="headerlink" title="Recommendation Environment"></a>Recommendation Environment</h3><p>假定一个给用户推荐个性化top-K items的生产环境推荐系统，一个带一组检索系统+排序系统的级联推荐。我们假定检索系统从总候选J里M个items里，筛出M’个items的集合R，其中M &gt;&gt; M’ &gt;= K。排序模型对M个items打分，然后返回top-K个items，这里我们聚焦于排序模块。<br><img src="/images/FIRP_table1.png" alt="Notation used throughout the paper"></p>
+<p>细节不太讲了，排序这块就是基于各种目标如点击，时长，购买等进行建模。本系统会评估用户是否点击 ${y \in \{0,1\}}$，以及用户点击后的user engagement ${z \in R}$,比如停留时长，购买或者打分等交互指标。</p>
+<p>ranker是以θ为参数的模型fθ; 训练模型以预测user engagement<br>$f_{\theta}(\mathbf{q}, \mathbf{v}) \rightarrow(\hat{y}, \hat{z}) \approx(y, z)$。 最后，通过单调评分函数$g(\hat{y}, \hat{z})$产生排序，并且向用户显示top-K个items。</p>
+<h3 id="Motivating-Fairness-Concerns"><a href="#Motivating-Fairness-Concerns" class="headerlink" title="Motivating Fairness Concerns"></a>Motivating Fairness Concerns</h3><p>本文聚焦于under-recommended的groups of items的风险。比如，一个社交网络会将a given demographic group排得靠后，那么可能会限制该群组的可见度和参与度。如果一个网站的评论模块是个性化的，如果特定群体的评论排序靠后，那么他们将会在网站拥有更少的声音。更抽象的说，我们假设每个item j都有敏感属性${s_j \in \{0,1\}}$。我们会去评测是否一个group的items被系统性地排后。</p>
+<p>虽然不是我们的主要关注点，但如果特定用户组偏好某一组项目，这些问题可能会与用户组问题保持一致。 可以明确扩展此框架以合并用户组。 如果每个用户都有敏感属性，我们可以计算每个用户组的所有以下指标，并比较各组之间的性能。 例如，如果我们担心社交网络对特定人群的特定主题的项目排名不足，我们可以比较该主题的内容在特定人群中的排名不足的程度。</p>
+<h3 id="Pairwise-Fairness-Metric"><a href="#Pairwise-Fairness-Metric" class="headerlink" title="Pairwise Fairness Metric"></a>Pairwise Fairness Metric</h3><p>尽管上边的目标看起来是ok的，但是我们必须更准确的去评判一个item是否是<code>&quot;under-ranked&quot;</code>。<br>在这里，我们借鉴了Hardt et al. [23]对于平等赔率的理解，分类器的公平性<br>通过比较其FPR and/or FNR 来量化。换句话说，一个item是正的，分类器预测其为正的概率。这在分类问题是好用的，因为模型可以和一个预定的阈值比较。<br>在推荐系统中，什么是正确的预测是不太清晰的，即使我们忽略交互，将分析现在在点击上。比如一个item被点击，那么y = 1,预测的概率y_hat = 0.6,它是正确的预测吗？它可以被认为还差0.4，但相比于其他概率小于0.6的，它是排在前面的。因此要想了解pointwise的误差，需要在同一个query下比较items的预测状况。</p>
+<p>我们定义一个pairwise accuracy:对于同一个query，被点击item排名高于未点击item的概率：</p>
+<script type="math/tex; mode=display">\text { Pairwise Accuracy } \triangleq P\left(g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j}\right)\right)>g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j^{\prime}}\right)\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, j, j^{\prime} \in \mathcal{R}_{\mathbf{q}}\right) (1)</script><p>为了方便：$c_{\mathbf{q}}\left(j, j^{\prime}\right) \triangleq \mathbb{1}\left[g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j}\right)\right)&gt;g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j^{\prime}}\right)\right)\right]$</p>
+<p>和大多数公平性研究一样，我们需要关注的其实是cross group的相对表现而非绝对值。<br>我们可以比较</p>
+<script type="math/tex; mode=display">P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=0\right)=P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=1\right)</script><p>也就是一个S = 0的group里items的PairwiseAccuracy是高于还是低于另一个S = 1的group。</p>
+<p>虽然这是一个很直观的metric，但它的问题在于它完全忽略了用户engagement z,可能会引发一些标题党之类的问题。所以要引入其他相关指标。</p>
+<p><strong>Definition 1 (Pairwise Fairness).</strong> 对于使用排序公式g的模型f，如果在items被交互成都相同的情况下，其两个group里点击的item排在另一个未点击item之前的可能性在是相同的，则被认为满足pairwise fairness</p>
+<script type="math/tex; mode=display">P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=0, z_{\mathbf{q}, j}=\tilde{z}\right)=P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=1, z_{\mathbf{q}, j}=\tilde{z}\right), \quad \forall \tilde{z} \qquad (2)</script><p>此定义为我们提供了每个组中items的排名准确性的总体概念。</p>
+<p>但这块对于曝光不足group的items还是有问题的。假设有A、B两个group $\left\{A_{j}\right\}_{j=1}^{3} \cup\left\{B_{j}\right\}_{j=1}^{3}$，都有3个items，第一种情况A1被点击，第二种B1被点击。<br>第一种情况，系统给出[A2,A3,B1,A1,B2,B3],第二种情况给出[A1,A2,A3,B1,B2,B3],我们可以看到整体pairwise accuracy都是2/5,但是第二种情况，B都在A后边。这个两个情况都有把被点击item排低的问题，但是后者显然更有问题，它独立于用户偏好，而系统性地偏好一个group。</p>
+<p>为了解决这个问题，我们将上述的pairwise fairness定义拆分成两个独立的标准：pairwise accuracy between items in the same group and pairwise accuracy between items from different groups。我们将这些metrics叫做<code>intra-group pairwise accuracy</code> and <code>inter-group pairwise accuracy</code></p>
+<script type="math/tex; mode=display">\text { Intra-Group Acc. } \triangleq P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=s_{j^{\prime}}, z_{\mathbf{q}, j}=\tilde{z}\right)  \qquad (3)</script><script type="math/tex; mode=display">\text { Inter-Group Acc. } \triangleq P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j} \neq s_{j^{\prime}}, z_{\mathbf{q}, j}=\tilde{z}\right)  \qquad  (4)</script><p>于是我们也可以定义<code>Intra-Group Pairswise Fairness</code> and <code>Inter-Group Pairwise Fairness</code>标准.</p>
+<p><strong>Definition 2 (Intra-Group Pairwise Fairness).</strong> 对于使用排序公式g的模型f，如果在items被交互程度相同的情况下，两个group里内部点击的item排在另一个未点击item之前的可能性在是相同的，则被认为满足intra-group pairwise fairness</p>
+<script type="math/tex; mode=display">P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j^{\prime}}, s_{j}=s_{j^{\prime}}=0, z_{\mathbf{q}, j}=\tilde{z}\right)=P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=s_{j^{\prime}}=1, z_{\mathbf{q}, j}=\tilde{z}\right), \forall \tilde{z}. \qquad (5)</script><p><strong>Definition 3 (Inter-Group Pairwise Fairness).</strong> 对于使用排序公式g的模型f，如果在items被交互程度相同的情况下，两个group里点击的item排在另一个组里未点击item之前的可能性在是相同的，则被认为满足inter-group pairwise fairness</p>
+<script type="math/tex; mode=display">P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j^{\prime}}>y_{\mathbf{q}, j^{\prime}}, s_{j}=0, s_{j^{\prime}}=1, z_{\mathbf{q}, j}=\tilde{z}\right)=P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=1, s_{j^{\prime}}=0, z_{\mathbf{q}, j}=\tilde{z}\right), \forall \tilde{z}. \qquad (6)</script><p>说的有点啰嗦，公式其实比较清晰。</p>
+<p>在某种程度上的组内公平性与整体公平概念起类似作用，因为它表示推荐系统能够很好地对用户感兴趣的项目进行排名。组间公平性则让我们进一步了解以group为整体中，排序中错误的代价。</p>
+<p>通过分解整体pairwise accuracy，我们可以看得更清晰：</p>
+<script type="math/tex; mode=display">\begin{aligned} P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=\right.&\left.\tilde{s}, z_{\mathbf{q}, j}=\tilde{z}, j, j^{\prime} \in \mathcal{R}\right) \\=& \sum_{\tilde{s}^{\prime}=\{\tilde{s}, 1-\tilde{s}\}} P\left(s_{j^{\prime}}=\tilde{s}^{\prime} | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=\tilde{s}, z_{\mathbf{q}, j}=\tilde{z}, j, j^{\prime} \in \mathcal{R}\right) \\ & \times P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=\tilde{s}, s_{j^{\prime}}=\tilde{s}^{\prime}, z_{\mathbf{q}, j}=\tilde{z}, j, j^{\prime} \in \mathcal{R}\right) \end{aligned}</script><p>也就是说，我们发现我们可以将pairwise comparisons分为两组，即组内和组间比较，并且overall pairwise accuracy是inter-group accuracy和ntra-group accuracy的加权和，其中权重通过相应的点击和参与度的概率来确定。 这些指标使我们更好地了解推荐系统的公平性。</p>
+<h3 id="Measurement"><a href="#Measurement" class="headerlink" title="Measurement"></a>Measurement</h3><p>如开头所说，推荐系统中的user和item是动态的，并且我们通常仅能观察到用户对先前推荐的项目的反馈，这使得指标易受先前推荐系统中的偏差影响。</p>
+<p>但是，对于上面给出的所有三个公平性定义，我们希望对items pair之间的用户偏好进行无偏估计。为此，我们在推荐系统上一小部分query进行<code>randomized experiments</code>。下面的实验描述都假设在实验组中对query子集进行操作。</p>
+<p>对于实验的query，我们将在推荐位置2和3向用户展示一对items;这可以防止位置偏差，即排名低的项目比排名高的项目更不可能被点击。因为上面的定义是来自给定query的相关项集合的任意项目对，所以对于每个query，从Rq随机选择两个项目，那它们在位置二和三中的排序也是随机的。</p>
+<p>在实验query中，只有一小部分将对随机项目对中的一个项目进行点击。当有item被点击时，我们记录query，pair，被点击item后续的engagement z。有了这个，我们可以计算上面公平性定义中的所有概率。在实践中，我们将z离散化为桶以便于比较。</p>
+<p>请注意，通过此实验可以看出，如果item未被点击，我们将无法观察到参与度。这使我们当前的指标设计基于z的条件，而不是估计z的准确性，因为我们只知道该pair中被点击item的z。</p>
+<p><strong>Discussion</strong>  这些指标将排序模型的性能与最终排序的最终公平性属性联系起来。一个潜在的假设是，相关项目集合Rq的检索系统在某种意义上是“公平的”。我们认为需要进一步的研究来理解检索系统对“公平”的意义以及检索系统中的任何程度的偏差如何通过排名系统传播来影响最终的排序体验。</p>
+<h2 id="Theoretical-Analysis"><a href="#Theoretical-Analysis" class="headerlink" title="Theoretical Analysis"></a>Theoretical Analysis</h2><h3 id="Ranking-Interpretation"><a href="#Ranking-Interpretation" class="headerlink" title="Ranking Interpretation"></a>Ranking Interpretation</h3><p>目前描述的指标主要是类似pairwise accuracy，但也可以从ranking的角度来解释。一个推荐系统通过g和$f_\theta$来对 $R_q$进行排序。用$\ell(j)_{\mathbf{q}}$来表示item j在排序list中的位置：</p>
+<script type="math/tex; mode=display">\ell(j)_{\mathbf{q}}=\left|\mathcal{R}_{\mathbf{q}}\right|-\sum_{j^{\prime} \in \mathcal{R}_{\mathbf{q}} \backslash j} \mathbb{1}\left[g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j}\right)\right)>g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j^{\prime}}\right)\right)\right] \qquad (8)</script><p>上式其实就把pairwise fairness和排序位置的公平性联系了起来。</p>
+<p><strong>Theorem 1.</strong> 如果一个推荐系统达到pairwise fairness，那么组间engagement为z的clicked item的预期位置是相同的。</p>
+<p><code>Proof.</code> This falls out of the definition of pairwise accuracy and pairwise fairness:</p>
+<script type="math/tex; mode=display">\begin{aligned} \mathbb{E}_{\mathbf{q} | y_{\mathbf{q}, j}} &=1, s_{j}=0, z_{\mathbf{q}, j}=\tilde{z}\left[\ell(j)_{\mathbf{q}}\right] \\ &=\mathbb{E}_{\mathbf{q}}\left[\left|\mathcal{R}_{\mathbf{q}}\right|\left(1-\text { Pairwise Accuracy }_{\mathbf{q}}(j)\right)\right] \\ &=\mathbb{E}_{\mathbf{q}}\left[\left|\mathcal{R}_{\mathbf{q}}\right|\left(1-P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=0, z_{\mathbf{q}, j}=\tilde{z}\right)\right)\right] \\ &=\mathbb{E}_{\mathbf{q}}\left[\left|\mathcal{R}_{\mathbf{q}}\right|\left(1-P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{\mathbf{q}, j}>y_{\mathbf{q}, j^{\prime}}, s_{j}=1, z_{\mathbf{q}, j}=\tilde{z}\right)\right)\right] \\ &\left.=\mathbb{E}_{\mathbf{q} | y_{\mathbf{q}, j}=1, s_{j}=1, z_{\mathbf{q}, j}=\tilde{z}} \tilde{\ell} \ell(j)_{\mathbf{q}}\right] \end{aligned}</script><p>因此，我们可以将pairwise recommender fairness 解释为<br>被点击和交互item的位置不应取决于组内成员的平均值。 （这种分析类似于传统pairwise IR中的概率解释，但现在是在推荐系统公平性的背景下。）</p>
+<p>inter-group and intra-group pairwise accuracies也和clicked item的排序位置相关联。</p>
+<p><img src="/images/FIRP_formula1.png" alt="formula"></p>
+<p>这里整体排名可以被分解为来自同一组的排名和来自其他组的排名。但是，由于每种类型的比较数量可能会有不同的分布，我们认为将这些术语作为概率是有意义的。</p>
+<h3 id="Relation-to-Pointwise-Metrics"><a href="#Relation-to-Pointwise-Metrics" class="headerlink" title="Relation to Pointwise Metrics"></a>Relation to Pointwise Metrics</h3><p>推荐系统中经常会根据Calibration和RMSE进行评估，这些指标对于分类和推荐来说是重要的公平性指标，但是对于保证pairwise fairness还是不足的。</p>
+<p>举个简单的例子，$z=0 \text { and } g(y, z) \triangleq y$,可以被认为是用pCTR来排序，对于每个group s，用$\overline{y}_{s} \triangleq \mathbb{E}_{\mathbf{q}, j}\left[y_{\mathbf{q}, j} | s_{j}=s\right]$ 来表示其label y的均值。</p>
+<p><strong>Calibration</strong> 先看一下calibration和pairwise fairness之间的关系，一个pCTR模型f(x)，当且仅当y满足以下情况，可以认为是校准的。</p>
+<script type="math/tex; mode=display">E[y | f(x)=\tilde{y}]=\tilde{y} \qquad (9)</script><p>就是预测值的均值等于实际均值，可以大概理解为在全局上是准的。</p>
+<p><strong>Lemma 1.</strong> A calibrated model is insufficient for guaranteeing pairwise ranking fairness.</p>
+<p><em>Proof.</em> 举个calibrated model不满足pairwise fairness的例子，假设我们学到一个模型对任意group s的item可以预测 $f\left(\mathbf{q}, \mathbf{v}_{j}\right) \triangleq \overline{y}_{s_{j}}$。这个模型毫无疑问是对每个group都校准了。</p>
+<p>如果我们有两个组，$\tilde{s}$ 和 $\tilde{s}^{\prime}$，$\overline{y}_{\tilde{s}}&gt;\overline{y}_{\tilde{s}^{\prime}}$,对任意items j属于$\tilde{s}$，和j’ 属于 $\tilde{s}^{\prime}$，有<br>$P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right)\right)=1$。因此 $P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{j}&gt;y_{j^{\prime}}, s_{j}=\tilde{s}, s_{j^{\prime}}=\tilde{s}^{\prime}\right)=1$ and  $P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{j^{\prime}}&gt;y_{j}, s_{j}=\tilde{s}, s_{j^{\prime}}=\tilde{s}^{\prime}\right)=0$。显然没有保证组间的公平性。根据公式（7），我们可以发现只要 $P\left(s_{j} \neq s_{j^{\prime}} | j, j^{\prime} \in \mathcal{R}_{\mathbf{q}}, y_{j}&gt;y_{j^{\prime}}\right)&gt;0$ ,全局pairwise fairness的公平性就无法保证。</p>
+<p><strong>Squared Error</strong> 推荐系统中另一个通用指标就是MSE，此指标和其变种被用来评估协同过滤系统的公平性。虽然可能促进跨群体间的准确性，但是还是不足以保证pairwise fairness。</p>
+<p><strong>Lemma 2.</strong> Equal MSE across groups is insufficient for guaranteeing pairwise ranking fairness.</p>
+<p><em>Proof.</em> 还是举个满足跨组MSE的模型，但不满足pairwise fairness。和刚才一样，学到模型 $f\left(\mathbf{q}, \mathbf{v}_{j}\right) \triangleq \overline{y}_{s_{j}}$。同样两个group，有$\overline{y}_{\tilde{s}}=1-\overline{y}_{\tilde{s}^{\prime}}$  and  $\overline{y}_{\tilde{s}}&gt;\overline{y}_{\tilde{s}^{\prime}}$,可以看到：</p>
+<script type="math/tex; mode=display">\mathrm{MSE}_{s}=\overline{y}_{s}\left(1-\overline{y}_{s}\right)^{2}+\left(1-\overline{y}_{s}\right)\left(0-\overline{y}_{s}\right)^{2}=\overline{y}_{s}-\overline{y}_{s}^{2}</script><p>因为设定 $\overline{y}_{\tilde{s}}=1-\overline{y}_{\tilde{s}^{\prime}}$,可推得  $\mathrm{MSE}_{\tilde{s}}=\mathrm{MSE}_{\tilde{s}^{\prime}}$。 同上一个论证，$\overline{y}_{\tilde{s}}&gt;\overline{y}_{\tilde{s}^{\prime}}$，有<br>$P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right)\right)=1$。因此 $P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{j}&gt;y_{j^{\prime}}, s_{j}=\tilde{s}, s_{j^{\prime}}=\tilde{s}^{\prime}\right)=1$ and  $P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | y_{j^{\prime}}&gt;y_{j}, s_{j}=\tilde{s}, s_{j^{\prime}}=\tilde{s}^{\prime}\right)=0$。也无法保证组间的公平性。</p>
+<p>跨组的MSE直观上是有价值的，但是如前文所写，其对排序是不足的，MSE没有区分过度预测和预测不足,不过即使考虑到也还是没用，因为其忽略了相对排名。</p>
+<h2 id="Pairwise-Regularization-to-Improve-Fairness"><a href="#Pairwise-Regularization-to-Improve-Fairness" class="headerlink" title="Pairwise Regularization to Improve Fairness"></a>Pairwise Regularization to Improve Fairness</h2><p>如何学到一个推荐系统让其满足公平性呢？之前说过，目前生产环境上的推荐系统大多是pointwise的，去预测y和z，所以我们提出一种建模方法且适用于现存技术。<br>先假设模型是通过loss  $L\left(f_{\theta}(\mathbf{q}, \mathbf{v}),(y, z)\right)$ 训练，比如用平方误差，就是 $L\left(f_{\theta}(\mathbf{q}, \mathbf{v}),(y, z)\right) \triangleq(\hat{y}-y)^{2}+(\hat{z}-z)^{2}$ ,进一步，我们假设已知$g(\hat{y}, \hat{z})$ 并且其是可微的，因此我们用一下目标训练模型$f_{\theta}$：</p>
+<script type="math/tex; mode=display">\min _{\theta}\left(\sum_{(\mathbf{q}, j, y, z) \in \mathcal{D}} L\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j}\right),(y, z)\right)\right)+\left|\operatorname{Corr}_{\mathcal{P}}(A, B)\right|   \qquad  (10)</script><p>D是原始训练数据，P是前文说的实验数据由$\left((\mathbf{q}, j, y, z),\left(\mathbf{q}^{\prime}, j^{\prime}, y^{\prime}, z^{\prime}\right)\right)$组成。第二项是由A B计算来的相关性，都是来自P的随机变量。</p>
+<script type="math/tex; mode=display">\begin{array}{l}{A=\left(g\left(f_{\theta}\left(\mathbf{q}, \mathbf{v}_{j}\right)\right)-g\left(f_{\theta}\left(\mathbf{q}^{\prime}, \mathbf{v}_{j^{\prime}}\right)\right)\right)\left(y-y^{\prime}\right)} \qquad (11)\\ {B=\left(s_{j}-s_{j^{\prime}}\right)\left(y-y^{\prime}\right)}\end{array} (12)</script><p>pairwise regularizer会计算被点击和未被点击的项目之间的残差与被点击的项目的组成员的相关性。因此，如果模型预测某个组里项目被点击的能力优于另一个组，则该模型会受到惩罚。</p>
+<p>为保证有足够的数据进行有意义的计算，重新平衡了下P，让其有一半的被点击的item属于group s = 0,另一半属于 group s = 1.根据目标我们可以进行更进一步的限制，如果我们关注组内公平，那么我们可以限制P让 $s_j \ne s_j^{\prime}$</p>
+<p>这种方法既适用于pointwise推荐系统，也适合pairwise推荐系统。</p>
+<p>其不能证明能保证pairwise fairness，但是它有很强的实验效果并且易于应用，这对生产环境很重要。</p>
+<h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><p>为了理解pairwise fairness指标和提出的建模改进，我们研究了大规模生产环境推荐系统的效果。分析sota模型的性能以及我们的建模更改对系统的影响。</p>
+<h3 id="Experimental-Setup"><a href="#Experimental-Setup" class="headerlink" title="Experimental Setup"></a>Experimental Setup</h3><p>如前文，这是一个多个检索系统+排序模型的级联推荐系统。我们评估的是排序效果。排序模型是一个muti-head的多层NN模型，预测点击 y和后续转化的交互z，模型持续得由之前推荐的数据去训练。这算是目前业界标配的搞法了。</p>
+<p>我们研究了排序模型对于sensitive subgroup 相对于其他数据“not subgroup”的效果。subgroup 大概占了总items的0.2%，但其对于分析推荐系统公平性很重要。如之前随机试验所述，我们收集向用户展示的相关items的随机对数据集P，并在用户点击其中一个项目时进行记录。 我们从数据集中随机取一半用于pairwise regularization，另一半用于评估模型。</p>
+<p>比较两个版本的模型 (1) 不考虑任何公平性的生产模型 ， （2） 同样结构但是用pairwise regularization去优化组间pairwise公平性的测试模型。<br>如下所示，我们聚焦于组间公平性，因为这块更待提高。</p>
+<p>因为敏感性，这里就不写绝对指标了，而是subgroup和其余项的相对效果。简单汇总平均了不同交互级别的pairwise accuracy，并通过not subgroup的平均准确率除以  subgroup得到相对准确率。所有绘图将engagement z分为四个级别并保持相同的y轴缩放，以便比较。</p>
+<p><img src="/images/FIRP_2.png" alt="We find some gaps in overall pairwise accuracy that are improved through the pairwise regularization."></p>
+<h3 id="Baseline-Performance"><a href="#Baseline-Performance" class="headerlink" title="Baseline Performance"></a>Baseline Performance</h3><p>(1) pairwise fairness<br>(2) intra-group pairwise fairness<br>(3) inter-group pairwise fairness</p>
+<p>图2(a)可以看到，engagement低的时候，subgroup的items是under-rank，当engagement高时是over-rank。总体来说non-subgroup略优8.3%。</p>
+<p>图3(a)显示subgroup在任意级别的engagement，选被点击item的效果更困难。non-subgroup在intra-group pairwise fairness上优 14.9%。这部分是由于subgroup很小，而non-subgroup项目之间存在更多的差异，使得比较更容易。当移除subgroup里很多高相似的，性能就没有区别了。</p>
+<p>因为发现组间公平性很差，non-subgroup优35.6%,所以我们聚焦提升组间pairwise fairness。</p>
+<h3 id="Fairness-Improvements"><a href="#Fairness-Improvements" class="headerlink" title="Fairness Improvements"></a>Fairness Improvements</h3><p><img src="/images/FIRP_34.png" alt="34"></p>
+<p>图一显示pairwise regularization基本使组间公平性对齐，正则化让non-subgroup的pairwise accuracy下降了，使两组间的差距从35.6%下降到2.6%,但是non-subgroup的精度下降是不好的，不过测试模型的pairwise accuracy还是和之前组间看到的pairwise accuracy大致相当。</p>
+<p>图2可以看到组间效果是提升的，差别从8.3%降到2.5%,但是Intra-group accuracy基本没被pairwise regularization优化。</p>
+<p>在线上实验中，我们发现对于engagement指标是中性的，subgroup在全局中也只是很小的一部分，取得公平性收益并没有以全局效果为代价。</p>
+<h3 id="How-are-improvements-achieved"><a href="#How-are-improvements-achieved" class="headerlink" title="How are improvements achieved?"></a>How are improvements achieved?</h3><p>结果可靠，但我们进一步进行分析，来了解正规化如何缩小fairness gaps。 我们检查每组item的exposure和用户偏好的比较，类似于粗略的pairwise校准分析。</p>
+<p>图4（a）显示，不论什么级别的engament，subgroup的点击率一直比较差，但是高engagement的item相对点击率到还好。</p>
+<p><em>exposure</em>:模型将一组item排到另一组item上的概率</p>
+<script type="math/tex; mode=display">\text { Exposure }_{\tilde{s}, \tilde{z}}=P\left(c_{\mathbf{q}}\left(j, j^{\prime}\right) | s_{j}=\tilde{s}, s_{j^{\prime}}=1-\tilde{s}, z_{\mathbf{q}, j^{\prime}}=\tilde{z}\right)</script><p>图4(c)中展现了正则项subgroup的item有更高的点击率相对于自然学习来说，这也就给了subgroup item更多的被推荐机会。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>这项工作提供了一种易于理解的方式来获得推荐系统排名公平性的无偏差测量，通过成对实验来观察用户偏好来做到。 基于这些实验数据，可以评估和分解推荐系统的公平性，以查看模型是否系统地对特定组中的项目进行错误排序或排名不足。 我们证明这一指标与排序平性定义一致，但不包括pointwise公平性指标。 我们最终提出了一种新颖的pairwise regularization方法，以提训练期间推荐系统的公平性，并表明它显著提高了大规模生产系统中的公平指标。</p>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>
