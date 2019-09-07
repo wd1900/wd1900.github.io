@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://yoursite.com/images/FIRP_formula1.png">
 <meta property="og:image" content="http://yoursite.com/images/FIRP_2.png">
 <meta property="og:image" content="http://yoursite.com/images/FIRP_34.png">
-<meta property="og:updated_time" content="2019-09-07T14:00:59.996Z">
+<meta property="og:updated_time" content="2019-09-07T14:05:16.726Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Fairness in Recommendation Ranking through Pairwise Comparisons 分享 | 王鸣辉的博客">
 <meta name="twitter:description" content="今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。">
@@ -230,7 +230,7 @@ classes that you can use:
   <section id="post-content" class="article-content post">
     <p>今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，今天和大家一起解读一下，希望能为以后的工作提供些启发。</p>
 <a id="more"></a>
-<p>今天分享的是谷歌一篇关于推荐系统中公平性的文章，我之前也没有太关注这一块的工作，这次和大家一起解读一下，希望能为以后的工作提供些启发。<br>推荐系统现在可以说是无处不在，那么有时候我们就需要考虑公平性的问题。<br>1.什么是公平性？<br>2.如何量化它？<br>3.如何解决它？<br>文章提供了一些指标来评价推荐系统算法的公平性，并展示了如何基于随机化实验的pairwise comparisons来衡量公平性。根据相应指标，提出了一个新的正则化方法，来促使模型在训练中改进相应指标，从而提高排序的公平性。将这种pairwise正则化应用于一个大规模的生产环境推荐系统后，能够显著提高系统的pairwise fairness，同时保证相应的点击与互动指标不掉。</p>
+<p>今天分享的是谷歌一篇关于推荐系统中公平性的文章<br><a href="https://arxiv.org/pdf/1903.00780.pdf" target="_blank" rel="noopener">Fairness in Recommendation Ranking through Pairwise Comparisons</a><br>，我之前也没有太关注这一块的工作，这次和大家一起解读一下，希望能为以后的工作提供些启发。<br>推荐系统现在可以说是无处不在，那么有时候我们就需要考虑公平性的问题。<br>1.什么是公平性？<br>2.如何量化它？<br>3.如何解决它？<br>文章提供了一些指标来评价推荐系统算法的公平性，并展示了如何基于随机化实验的pairwise comparisons来衡量公平性。根据相应指标，提出了一个新的正则化方法，来促使模型在训练中改进相应指标，从而提高排序的公平性。将这种pairwise正则化应用于一个大规模的生产环境推荐系统后，能够显著提高系统的pairwise fairness，同时保证相应的点击与互动指标不掉。</p>
 <p>总的来说，虽然提升公平性的过程中，点击和互动指标是中性的。也是说从用户侧实验角度来说其实是没有提升的，实际工作中遇到这种情况其实是无法推上线的。不过我觉得有打算在线上尝试的同学可以考虑开开作者侧实验，文章中的结论显示对于原先学习不充分的group，在应用pairwise正则化后，可以提高其点击率，也就会增加其曝光机会，在不影响大盘指标的情况下，我觉得这个对于作者的发文尤其是小众的，应该是正向的。</p>
 <p>依旧收简历，欢迎各位同学来抖音火山推荐团队，邮箱 wangmhwd@gmail.com</p>
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>本文聚焦于推荐系统中under-ranking groups of items的风险。例如，如果社交网络对某个人口统计群体的帖子排名不高，那就可能会限制该群组在服务中的可见性。</p>
