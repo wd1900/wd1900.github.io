@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      谷歌Recommending What Video to Watch Next: A Multitask Ranking System | 王鸣辉的博客
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Minghui Wang">
+    
+    
+
+    <meta name="description" content="中秋佳节的最后一天分享篇Youtube推荐排序模块的论文">
+<meta name="keywords" content="Recommendation,Youtube,Google,Multitask,Selection bais">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谷歌Recommending What Video to Watch Next: A Multitask Ranking System | 王鸣辉的博客">
+<meta property="og:url" content="http://yoursite.com/2019/09/15/Recommending-What-Video-to-Watch-Next-A-Multitask-Ranking-System/index.html">
+<meta property="og:site_name" content="王鸣辉的博客">
+<meta property="og:description" content="中秋佳节的最后一天分享篇Youtube推荐排序模块的论文">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f1.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f2.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f3.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f4.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_t1.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f5.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_f6_7.png">
+<meta property="og:image" content="http://yoursite.com/images/AMRS_t2.png">
+<meta property="og:updated_time" content="2019-09-15T09:58:04.115Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谷歌Recommending What Video to Watch Next: A Multitask Ranking System | 王鸣辉的博客">
+<meta name="twitter:description" content="中秋佳节的最后一天分享篇Youtube推荐排序模块的论文">
+<meta name="twitter:image" content="http://yoursite.com/images/AMRS_f1.png">
+
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">王鸣辉的博客</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          Wang Minghui&#39;s Personal Blog
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="Huno on GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+
+
+      <!-- <li class="navigation__item">
+        <a href="https://github.com/wd1900" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li> -->
+
+      <li class="navigation__item">
+        <a href="http://weibo.com/p/1005051882909995/" title>
+          <i class="icon cs-icon-weibo"></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+
+
+
+  </ul>
+</nav>
+
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">谷歌Recommending What Video to Watch Next: A Multitask Ranking System</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2019-09-15" class="post-meta__date date">2019-09-15</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/Google/">Google</a>, <a class="tags-link" href="/tags/Multitask/">Multitask</a>, <a class="tags-link" href="/tags/Recommendation/">Recommendation</a>, <a class="tags-link" href="/tags/Selection-bais/">Selection bais</a>, <a class="tags-link" href="/tags/Youtube/">Youtube</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>中秋佳节的最后一天分享篇Youtube推荐排序模块的论文</p>
+<a id="more"></a>
+<p><a href="https://dl.acm.org/citation.cfm?id=3346997" target="_blank" rel="noopener">Recommending What Video to Watch Next: A Multitask Ranking System</a><br>之前内部查找论文时就注意到了谷歌的这篇文章，从摘要中就可以看出这应该是在<code>youtube</code>上实践的一篇文章，并且内容应该比较实在。不过那时候文章还没有发布出来，中秋最后一天发现有pdf发出来了，便果断看了下。</p>
+<p>看完后发现不出所料，确实是比较实在的一篇文章，本身虽然没有提出特别新颖的结构，不过内容很实在，也work，算是推荐系统中排序模块很通俗易懂的文章了，主要聚焦于大规模视频推荐中的排序阶段，介绍一些比较实在的经验和教训，解决<code>Multitask Learning</code>, <code>Selection Bias</code>这两个排序系统的关键点。</p>
+<p>一般推荐系统排序模块的进化路径是：<br>ctr任务-&gt; ctr+时长 -&gt; mulittask &amp; selection bias</p>
+<p>所以格外推荐还在推荐系统起步阶段的同学读一读这篇paper。</p>
+<p>下边简单抽文章的重点介绍下</p>
+<p>真实场景中有很多挑战：</p>
+<ul>
+<li>有很多不同甚至是冲突的优化目标，比如我们不仅希望用户观看，还希望用户能给出高评价并分享</li>
+<li>系统中经常有一些隐性偏见，。比如用户是因为视频排得靠前而点击&amp;观看，而非用户确实很喜欢。因此用之前模型产生的数据会引发bias，从而形成一个反馈循环，越来越偏。如何高效有力地去解决还是个尚未解决的问题。</li>
+</ul>
+<p>本文还是一个NN的架构去作为排序模块，如图1.基于Wide&amp;Deep的架构 + Multi-gate Mixture-of-Experts （MMOE）。MMOE也是谷歌的一篇做multitask的论文，对于不是那么一致的多目标上效果比shared bottom的结构好些，不过实际效果还是比较分业务场景，有兴趣的同学可以读读论文、实践下。另外，还引入了个shallow tower去建模并移除selection bias。作者介绍将其应用于线上大规模视频平台上是有显著提升的。</p>
+<p>先说下多目标，分为两类：</p>
+<ul>
+<li>engagement objectives：点击以及于视频观看等参与度目标</li>
+<li>satisfaction objectives：Youtube上的喜欢某个视频、打分</li>
+</ul>
+<p>对于存在潜在冲突的目标，通过MMOE的结构来解决，通过门结构来选择性的从输入获取信息。</p>
+<p>为了减少selection bias（比如position bias），用图1左边的浅层塔，接收selection bias作为输入，比如排序位置，输出标量作为主模型最终预测的偏差项。<br>模型将目标分解为两部分，一个是无偏的用户偏好，另一个是倾向分。模型结构可以看做是Wide&amp;Deep的扩展，浅层塔代替Wide部分。因为直接学习shallow tower,所以不用随机实验区获得倾向分。</p>
+<p><img src="/images/AMRS_f1.png" alt="Figure 1: Model architecture of our proposed ranking system"></p>
+<p>在Youtube上进行两段实验验证效果：</p>
+<ul>
+<li>multitask learning</li>
+<li>removing a common type of selection bias</li>
+</ul>
+<p>贡献：</p>
+<ul>
+<li>an end-to-end ranking system</li>
+<li>multi-objective learning （MMOE)</li>
+<li>mitigate position bias</li>
+<li>signifcant improvements on a real-world large-scale video recommendation system </li>
+</ul>
+<h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><p><strong>模型结构</strong>就不多介绍了，基本上就是各种pointwise,pairwise目标，还有各种NN模型结构，rnn，attention，NN+GBDT等等。</p>
+<p><strong>多目标</strong>的话最基础的就是shared-bottom这种共享底层的结构，进阶版就是MMOE这种了，以及因为不同目标的loss贡献不一样所以会搞一些比如gradnorm这种的优化算法。</p>
+<p><strong>Bias</strong>之前的分享的推荐系统文章基本都提过这块。常见的是把position之类的作为输入，预估时用position为1的输出值。<br>其他的方案有从随机数据中学一个bias iterm，也有不需要随机数据的，用counter-factual model学inverse propensity score (IPS)。像Twitter、Youtube这种用户兴趣变化比较快的，不太适合IPS，需要更高效的方案来适应这种数据分布变化。</p>
+<h2 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h2><h3 id="System-Overview"><a href="#System-Overview" class="headerlink" title="System Overview"></a>System Overview</h3><p>排序系统学习两种目标 1) 参与度：点击、观看  2）满意度：喜欢、不喜欢。所以排序目标是分类问题和回归问题的组合</p>
+<p>此方法是pointwise，像pairwise和listwise的方案虽然可以提升推荐的多样性。但是基于serving时的考虑还是选择用pointwise，简单高效，尤其是候选集比较多的时候。</p>
+<h3 id="Ranking-Objectives"><a href="#Ranking-Objectives" class="headerlink" title="Ranking Objectives"></a>Ranking Objectives</h3><p>目标基本上就是刚才说的两类，一类 点击、时长， 一类 点赞、打分。分类问题就用cross entropy loss学习，回归问题可就是square loss。最后用融合公式来平衡用户交互和满意度指标，取得最佳效果。</p>
+<p><img src="/images/AMRS_f2.png" alt="Figure 2: Replacing shared-bottom layers with MMoE."></p>
+<h3 id="Modeling-Task-Relations-and-Conficts-with-Multi-gate-Mixture-of-Experts"><a href="#Modeling-Task-Relations-and-Conficts-with-Multi-gate-Mixture-of-Experts" class="headerlink" title="Modeling Task Relations and Conficts with Multi-gate Mixture-of-Experts"></a>Modeling Task Relations and Conficts with Multi-gate Mixture-of-Experts</h3><p>常见的多目标的排序系统用的是shared-bottom结构，但是这种hard-parameter强行共享底层的方案对于目标之间相关性小的任务，是有损效果的。因此采用并扩展MMOE结构来解决多目标冲突问题。</p>
+<p>本文的排序系统上是在共享隐层上边加experts，如图2-b。Mixture-of-Experts 层可以帮助从输入中学习模块化信息，更好的建模多模态特征空间。但直接上MoE层会显著增大训练和预测的消耗，因为输入层维度一般比隐层维度大。</p>
+<p>具体公式如下：</p>
+<script type="math/tex; mode=display">\begin{array}{c}{y_{k}=h^{k}\left(f^{k}(x)\right)} \\ {\text { where } f^{k}(x)=\sum_{i=1}^{n} g_{(i)}^{k}(x) f_{i}(x)}\end{array} （1）</script><p>x就是低层的共享embedding，$f_{i}(x)$就是第i个expert，g(x)就是图中的task layer。</p>
+<script type="math/tex; mode=display">g^{k}(x)=\operatorname{softmax}\left(W_{g^{k}} x\right) \qquad (2)</script><h3 id="Modeling-and-Removing-Position-and-Selection-Biases"><a href="#Modeling-and-Removing-Position-and-Selection-Biases" class="headerlink" title="Modeling and Removing Position and Selection Biases"></a>Modeling and Removing Position and Selection Biases</h3><p><img src="/images/AMRS_f3.png" alt="Figure 3: Adding a shallow side tower to learn selection bias(e.g., position bias)."></p>
+<p>排序系统中有很多bias，最明显的就是position bias，排的靠前的天然就比排的靠后的容易被点击，所以我们需要去移除这种bias，打破这种越来越偏的循环。</p>
+<p>所以模型结构上除了一个main tower，还有一个shallow tower去建模bias，将输出的偏置项加到main tower最终输出的logit上，如图3.训练的时候浏览时的位置作为输入，设置drop-out rate为10%，避免过度依赖位置特征。serving时，位置特征设为missing。设备信息会被加入到shallow tower的输入中，因为不同设备上不同位置的bias是不同的。</p>
+<h2 id="EXPERIMENT-RESULTS"><a href="#EXPERIMENT-RESULTS" class="headerlink" title="EXPERIMENT RESULTS"></a>EXPERIMENT RESULTS</h2><p>实验就开在Youtube上，比较可靠。有不少推荐系统方向论文的改进是在很小数据集上测试的，在大规模场景下经常就不好使了，所以我比较少去看学术界的推荐系统论文。</p>
+<p><img src="/images/AMRS_f4.png" alt="Figure 4: Recommending what to watch next on YouTube."></p>
+<p>离线使用指标用AUC，线上开AB实验，评估参与度指标和满意度指标，除此外还要关注下服务的预测开销。</p>
+<h3 id="Multitask-Ranking-With-MMoE"><a href="#Multitask-Ranking-With-MMoE" class="headerlink" title="Multitask Ranking With MMoE"></a>Multitask Ranking With MMoE</h3><h4 id="Baseline-Methods"><a href="#Baseline-Methods" class="headerlink" title="Baseline Methods."></a>Baseline Methods.</h4><p>基线方法就是图2a的shared-bottom，模型复杂度是差不多的，确保线上serving开销相同。</p>
+<h4 id="Live-Experiment-Results"><a href="#Live-Experiment-Results" class="headerlink" title="Live Experiment Results."></a>Live Experiment Results.</h4><p>结果如表1，MMOE在保持模型复杂度不变的情况下，比较了下4个experts和8个experts。可以看出参与度、满意度指标都有所提升。</p>
+<p><img src="/images/AMRS_t1.png" alt="Table 1: YouTube live experiment results for MMoE."></p>
+<h4 id="Gating-Network-Distribution"><a href="#Gating-Network-Distribution" class="headerlink" title="Gating Network Distribution."></a>Gating Network Distribution.</h4><p>图5画了网络中每个expert对每个任务的累计概率，方便理解MMoE如何帮助优化多目标。可以看到有的expert偏重参与度任务，有的偏重满意度任务</p>
+<p><img src="/images/AMRS_f5.png" alt="Figure 5: Expert utilization for multiple tasks on YouTube."></p>
+<p>另外让gating networks直接和input layer相连,没有明显提升，所以没必要增大开销进行直连。</p>
+<h4 id="Gating-Network-Stability"><a href="#Gating-Network-Stability" class="headerlink" title="Gating Network Stability."></a>Gating Network Stability.</h4><p>多机分布式训练可能会导致model diverged，比如Relu death。在分布式训练中，可以观察到此模型中gating network有20%会极化，这降低了模型性能。因此训练中要使用drop-out，10%的概率将expert的利用程度设为0并重新归一化softmax输出的概率。</p>
+<h3 id="Modeling-and-Reducing-Position-Bias"><a href="#Modeling-and-Reducing-Position-Bias" class="headerlink" title="Modeling and Reducing Position Bias"></a>Modeling and Reducing Position Bias</h3><h4 id="Analysis-of-User-Implicit-Feedback"><a href="#Analysis-of-User-Implicit-Feedback" class="headerlink" title="Analysis of User Implicit Feedback."></a>Analysis of User Implicit Feedback.</h4><p>图6展示了位置1-9的CTR，这里边有item相关性的原因也有position bias的因素。因此用个shollow tower去学下position bias。</p>
+<p><img src="/images/AMRS_f6_7.png" alt="Figure 6 and 7"></p>
+<h4 id="Baseline-Methods-1"><a href="#Baseline-Methods-1" class="headerlink" title="Baseline Methods."></a>Baseline Methods.</h4><ul>
+<li>直接用位置特征作为输入</li>
+<li>Adversarial learning: 用辅助任务去预测展现的位置，在反向传播阶段把梯度移除掉，这样主模型不会依赖位置特征</li>
+</ul>
+<h4 id="Live-Experiment-Results-1"><a href="#Live-Experiment-Results-1" class="headerlink" title="Live Experiment Results."></a>Live Experiment Results.</h4><p>表2是结果，文中提的方法更好<br><img src="/images/AMRS_t2.png" alt="Table 2: YouTube live experiment results for modeling position bias."></p>
+<h4 id="Learned-Position-Biases"><a href="#Learned-Position-Biases" class="headerlink" title="Learned Position Biases."></a>Learned Position Biases.</h4><p>图7是学到的position bias，可以看到位置越靠后，bias越小。</p>
+<h3 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h3><h4 id="Neural-Network-Model-Architecture-for-Recommendation-and-Ranking"><a href="#Neural-Network-Model-Architecture-for-Recommendation-and-Ranking" class="headerlink" title="Neural Network Model Architecture for Recommendation and Ranking."></a>Neural Network Model Architecture for Recommendation and Ranking.</h4><p>许多推荐系统paper里提出的结构源于一些传统机器学习领域，比如NLP的 multi-headed attention，CV里的CNN。但这些其实都不直接适合我们的需求。<br>主要原因：</p>
+<ul>
+<li>Multimodal feature spaces.</li>
+<li>Scalability and multiple ranking objectives.</li>
+<li>Noisy and locally sparse training data.</li>
+<li>Distributed training with mini-batch stochastic gradient descent.</li>
+</ul>
+<h4 id="Tradeof-between-Efectiveness-and-Eficiency"><a href="#Tradeof-between-Efectiveness-and-Eficiency" class="headerlink" title="Tradeof between Efectiveness and Eficiency."></a>Tradeof between Efectiveness and Eficiency.</h4><h4 id="Biases-in-Training-Data"><a href="#Biases-in-Training-Data" class="headerlink" title="Biases in Training Data."></a>Biases in Training Data.</h4><h4 id="Evaluation-Challenge"><a href="#Evaluation-Challenge" class="headerlink" title="Evaluation Challenge."></a>Evaluation Challenge.</h4><h4 id="Future-Directions"><a href="#Future-Directions" class="headerlink" title="Future Directions."></a>Future Directions.</h4><ul>
+<li>Exploring new model architecture for multi-objective ranking which balances stability, trainability and expressiveness.</li>
+<li>Understanding and learning to factorize.</li>
+<li>Model compression.</li>
+</ul>
+
+  </section>
+
+  
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'wd1900'; 
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+  
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+</body>
+</html>
